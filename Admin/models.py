@@ -13,10 +13,15 @@ class BaseUser(models.Model):
     gender=models.CharField(max_length=20,choices=option)
     mobile=models.CharField(max_length=12)
     address=models.TextField(max_length=120)
+    choice=(
+        ("Admin","Admin"),
+        ("Hotel","Hotel"),
+        ("Guest","Guest")
+    )
+    type_of_user=models.CharField(choices=choice)
 
 
-
-class Hotels(models.Model):
+class Hotel(models.Model):
     name=models.CharField(max_length=120)
     image=models.ImageField(upload_to="images",null=True)
     address=models.TextField(max_length=120)
@@ -27,7 +32,7 @@ class Hotels(models.Model):
     owner_email=models.EmailField(blank=True)
     owner_mobile=models.CharField(max_length=12)
 
-class Rooms(models.Model):
+class Room(models.Model):
     room_name=models.CharField(max_length=20)
     options=(
         ("Booked","Booked"),
@@ -40,7 +45,7 @@ class Rooms(models.Model):
     occupancy_child=models.PositiveIntegerField()
 
 
-class Bookings(models.Model):
+class Booking(models.Model):
     booking_id=models.CharField(max_length=100,primary_key=True)
     occupancy_adult = models.PositiveIntegerField()
     occupancy_child = models.PositiveIntegerField()
