@@ -41,6 +41,7 @@ class Room(models.Model):
     )
     availability=models.CharField(choices=options,default="Open")
     price=models.PositiveIntegerField()
+    hotel=models.ForeignKey(Hotel,on_delete=models.CASCADE)
     occupancy_adult=models.PositiveIntegerField()
     occupancy_child=models.PositiveIntegerField()
 
@@ -50,7 +51,7 @@ class Booking(models.Model):
     occupancy_adult = models.PositiveIntegerField()
     occupancy_child = models.PositiveIntegerField()
     guest=models.ForeignKey(BaseUser,on_delete=models.CASCADE)
-    room=models.ForeignKey(Rooms,on_delete=models.CASCADE)
+    room=models.ForeignKey(Room,on_delete=models.CASCADE)
     stay_start_date=models.DateField()
     stay_end_date=models.DateField()
 
