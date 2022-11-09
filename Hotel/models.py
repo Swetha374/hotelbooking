@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User, AbstractBaseUser
+from django.contrib.auth.models import User, AbstractBaseUser,AbstractUser
 from django.core.validators import MaxValueValidator,MinValueValidator
 
 class BaseUser(AbstractBaseUser):
@@ -19,19 +19,27 @@ class BaseUser(AbstractBaseUser):
         ("Hotel","Hotel"),
         ("Guest","Guest")
     )
-    type_of_user=models.CharField(choices=CHOICE)
+    type_of_user=models.CharField(max_length=50,choices=CHOICE)
+    USERNAME_FIELD='email'
 
 
 class Hotel(models.Model):
-    name=models.CharField(max_length=120)
+
+    hotel_name= models.CharField(max_length=120,unique=True)
     image=models.ImageField(upload_to="images",null=True)
     address=models.TextField(max_length=120)
     location=models.CharField(max_length=50)
     star_rating=models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     owner_name=models.CharField(max_length=50)
     owner_image=models.ImageField(upload_to="owner_images",null=True,blank=True)
-    owner_email=models.EmailField(null=True)
+    owner_email=models.EmailField(null=True,unique=True)
     owner_mobile=models.CharField(max_length=12)
+    CHOICE = (
+        ("Admin", "Admin"),
+        ("Hotel", "Hotel"),
+        ("Guest", "Guest")
+    )
+    type_of_user = models.CharField(max_length=50, choices=CHOICE,default="Guest")
 
 class Room(models.Model):
     room_name=models.CharField(max_length=20)
@@ -40,7 +48,7 @@ class Room(models.Model):
         ("Open","Open"),
 
     )
-    availability=models.CharField(choices=OPTIONS,default="Open")
+    availability=models.CharField(max_length=50,choices=OPTIONS,default="Open")
     price=models.PositiveIntegerField()
     hotel=models.ForeignKey(Hotel,on_delete=models.CASCADE)
     occupancy_adult=models.PositiveIntegerField()
@@ -54,7 +62,7 @@ class Booking(models.Model):
         ("Rejected","Rejected"),
         ("Expired","Expired")
     )
-    status=models.CharField(choices=OPTIONS)
+    status=models.CharField(max_length=50,choices=OPTIONS)
     occupancy_adult = models.PositiveIntegerField()
     occupancy_child = models.PositiveIntegerField()
     guest=models.ForeignKey(BaseUser,on_delete=models.CASCADE)
