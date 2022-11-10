@@ -90,7 +90,7 @@
                                                 {%csrf_token%}
                                                 {{form.as_p}}
                                                  <div class="d-grid gap-2 col-6 mx-auto">
-                                                    <button type="submit" class="btn btn-primary btn-block mb-4">
+                                                    <button class="btn btn-primary btn-block mb-4" type="submit">
                                                         Login
                                                     </button>
                                                 </div>
@@ -102,8 +102,10 @@
                             </div>
                             <div class="card-footer text-center py-3">
                                 <div class="small"><a href="{%url 'hotel-reg'%}">New Hotel? Sign up!</a></div>
+
                                 <div class="large"><a href="{%url 'guest-reg'%}">New user? Sign up!</a></div>
                             </div>
+
                         </div>
                     </div>
                 </div>

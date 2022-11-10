@@ -14,12 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from Hotel import views
+from Guest import views
+
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-   path("register",views.guest_registration,name="guest-reg"),
+
+   path("dashboard",views.guest_home,name="guest-home"),
+   path("logout",views.logout_view,name="logout")
 
 ] +static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

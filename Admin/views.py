@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from Hotel.decorators import signin_required
 
-# Create your views here.
+@signin_required
+def admin_home(request):
+    return render(request,"index.html")

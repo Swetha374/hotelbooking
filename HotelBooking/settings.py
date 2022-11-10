@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Hotel',
     'rest_framework',
     'Admin',
-    'Hotel',
     'Guest',
 
 ]
@@ -55,6 +55,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'HotelBooking.urls'
+AUTH_USER_MODEL='Hotel.User'
+
+AUTHENTICATION_BACKENDS=[
+    'django.contrib.auth.backends.ModelBackend'
+]
+
+
 
 TEMPLATES = [
     {
