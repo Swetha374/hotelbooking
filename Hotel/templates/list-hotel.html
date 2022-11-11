@@ -15,7 +15,7 @@
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3" href="{%url 'admin-home'%}">Hotel Home</a>
+    <a class="navbar-brand ps-3" href="{%url 'admin-home'%}">Admin Home</a>
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
             class="fas fa-bars"></i></button>
@@ -62,8 +62,60 @@
     </footer>
 
 </div>
- <div class="card-footer text-center py-3">
-    <div class="hclass"><a href="{%url 'hotel-reg'%}">Add hotel</a></div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <img src="{%static 'images/todo.png'%}">
+        </div>
+        <div class="col-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+            {%if messages%}
+                {%for m in messages%}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  <strong>{{m}}</strong>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {%endfor%}
+            {%endif%}
+        </div>
+        <div class="col-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-2"></div>
+            <div class="col-8">
+                 {%if %}
+                <table class="table">
+                    <tr>
+                        <th>Task_name</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+
+                    </tr>
+                    {%for todo in todos%}
+                    <tr>
+                        <td>{{}}</td>
+                        <td>{{todo.status}}</td>
+                        <td>{{todo.created_date}}</td>
+                        <td>
+                            <a href="{%url 'edit-todo' todo.id %}" class="btn btn-outline-warning">Edit</a>
+                            <a href="{%url 'todo-detail' todo.id %}" class="btn btn-outline-info">Detail</a>
+                            <a href="{%url 'remove-todo' todo.id %}" class="btn btn-outline-warning">Delete</a>
+                        </td>
+                    </tr>
+                    {%endfor%}
+
+                </table>
+                {%else%}
+                <h2 class="text-danger">No todos</h2>
+                {%endif%}
+        </div>
+        <div class="col-2"></div>
+    </div>
 </div>
 
 </div>

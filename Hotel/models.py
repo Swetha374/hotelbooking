@@ -2,35 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User, AbstractBaseUser,AbstractUser
 from django.core.validators import MaxValueValidator,MinValueValidator
 from django.contrib.auth.models import UserManager
-
-# USER_TYPE=(
-#         ("Admin","Admin"),
-#         ("Hotel","Hotel"),
-#         ("Guest","Guest")
-#     )
+from Admin.models import User
 
 
-GENDER=(
-    ("male","male"),
-    ("female","female"),
-    ("others","others")
-)
-
-
-
-
-class User(AbstractUser):
-    is_admin=models.BooleanField("Is admin",default=False)
-    is_hotel = models.BooleanField("Is hotel", default=False)
-    is_guest = models.BooleanField("Is guest", default=False)
-    name = models.CharField(max_length=200,null=True,blank=True)
-    dob=models.DateField(null=True,blank=True)
-    gender=models.CharField(max_length=20,choices=GENDER,null=True)
-    mobile=models.CharField(max_length=12,null=True)
-    email=models.EmailField(verbose_name='email address',max_length=200,unique=True)
-    username= models.CharField(max_length=30, unique=True)
-    password1 = models.CharField(max_length=50)
-    password2 = models.CharField(max_length=50)
 
 
 class Hotel(models.Model):
@@ -40,18 +14,9 @@ class Hotel(models.Model):
     address=models.TextField(max_length=120)
     location=models.CharField(max_length=50)
     star_rating=models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-    owner_name=models.CharField(max_length=50)
-    owner_image=models.ImageField(upload_to="owner_images",null=True,blank=True)
-    owner_email=models.EmailField(null=True)
-    owner_mobile=models.CharField(max_length=12)
-    is_admin = models.BooleanField("Is admin", default=False)
-    is_hotel = models.BooleanField("Is hotel", default=False)
-    is_guest = models.BooleanField("Is guest", default=False)
-    username=models.CharField(max_length=30)
-    password1=models.CharField(max_length=50)
-    password2=models.CharField(max_length=50)
-
-
+    password=models.CharField(max_length=50)
+    owner_name = models.OneToOneField(User, on_delete=models.CASCADE)  # one to one relation
+    username=models.CharField(max_length=50)
 
 class Room(models.Model):
     room_name=models.CharField(max_length=20)

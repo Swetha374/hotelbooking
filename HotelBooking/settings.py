@@ -55,7 +55,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'HotelBooking.urls'
-AUTH_USER_MODEL='Hotel.User'
+AUTH_USER_MODEL='Admin.User'
 
 AUTHENTICATION_BACKENDS=[
     'django.contrib.auth.backends.ModelBackend'

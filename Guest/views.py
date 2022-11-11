@@ -5,7 +5,7 @@ from Hotel.decorators import signin_required
 
 @signin_required
 def guest_home(request):
-    return render(request,"dashboard.html")
+    return redirect("guest-home")
 
 @signin_required
 def logout_view(request):

@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth.models import User
+from Admin.models import *
+# from django.contrib.auth.models import User
 from Hotel.models import *
 from django.contrib.auth.forms import UserCreationForm
 
@@ -17,23 +18,17 @@ class HotelRegistration(forms.ModelForm):
                 "location",
                 "star_rating",
                 "owner_name",
-                "owner_image",
-                "owner_email",
-                "owner_mobile",
-                "is_admin",
-                "is_hotel",
-                "is_guest",
-                "username",
-                "password1",
-                "password2"
+                "password",
+
                 ]
         widgets = {
             "username": forms.TextInput(attrs={"class": "form-control", "placeholder": "Username"}),
-            "password1": forms.PasswordInput(attrs={"class": "form-control","placeholder": "password1"}),
-            "password2": forms.PasswordInput(attrs={"class": "form-control","placeholder": "password2"}),
+            "password": forms.PasswordInput(attrs={"class": "form-control","placeholder": "password1"}),
+
         }
 
-class GuestRegistration(forms.ModelForm):
+
+class Registration(forms.ModelForm):
 
     class Meta:
         model=User
@@ -43,17 +38,14 @@ class GuestRegistration(forms.ModelForm):
             "gender",
             "mobile",
             "email",
-            "is_admin",
-            "is_hotel",
-            "is_guest",
+            "usertype",
             "username",
-            "password1",
-            "password2",
+            "password"
 
         ]
 
     widgets = {
         "username": forms.TextInput(attrs={"class": "form-control", "placeholder": "Username"}),
-        "password1": forms.PasswordInput(attrs={"class": "form-control", "placeholder": "password1"}),
-        "password2": forms.PasswordInput(attrs={"class": "form-control", "placeholder": "password2"}),
+        "password": forms.PasswordInput(attrs={"class": "form-control", "placeholder": "password1"}),
+
     }

@@ -22,19 +22,16 @@ def login_view(request):
             pwd = form.cleaned_data.get("password")
             user = authenticate(request, username=uname, password=pwd)
             print(user)
-            if user is not None and user.is_admin:
+            if user:
                 login(request, user)
-                return redirect("admin-home")
-            # elif user is not None and Hotel.is_hotel:
-            #     login(request, user)
-            #     return redirect("hotel-home")
-
-            elif user is not None and user.is_guest:
-                login(request, user)
-                return redirect("guest-home")
-
+                if request.user.is_superuser:  # user type
+                    return redirect("admin-home")
+                if request.user.usertype == 'Hotel':
+                    return redirect("hotel-home")
+                if request.user.usertype == 'Guest':
+                    return render(request, "dashboard.html")
         else:
-             messages.error(request, "invalid username or password")
+            messages.error(request, "invalid username or password")
         messages.error(request,"please login")
         return render(request, "signin.html", {"form": form})
 
@@ -45,31 +42,37 @@ def hotel_registration(request):
     if request.method == "POST":
         form=forms.HotelRegistration(request.POST, files=request.FILES)
         if form.is_valid():
-            Hotel.objects.create(**form.cleaned_data)
+            form.instance.owner=request.user
             form.save()
-            messages.success(request,"your account has been created")
-            return redirect("signin")
+            messages.success(request,"your hotel has been added")
+            return redirect("list-hotel")
     else:
         messages.error(request, "registration failed")
-    return render(request, "guest-reg.html", {"form": form})
+    return render(request, "hotel-reg.html", {"form": form})
 
 
-def guest_registration(request):
+def registration(request):
     if request.method == "GET":
-        form=forms.GuestRegistration()
+        form=forms.Registration()
         return render(request, "guest-reg.html", {"form": form})
 
     if request.method == "POST":
-        form=forms.GuestRegistration(request.POST, files=request.FILES)
+        form=forms.Registration(request.POST, files=request.FILES)
         if form.is_valid():
-            User.objects.create_user(**form.cleaned_data)
+            user=User.objects.create_user(**form.cleaned_data)
+            user.set_password(form.cleaned_data.get('password'))
+            user.save()
             messages.success(request,"your account has been created")
-            return redirect("signin")
+
     else:
         messages.error(request, "registration failed")
     return render(request,"guest-reg.html",{"form":form})
+
+
 
 @signin_required
 def hotel_home(request):
     return render(request,"home.html")
 
+def list_hotel(request):
+    return render(request,"list-hotel.html")
