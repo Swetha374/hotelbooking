@@ -29,7 +29,7 @@ class User(AbstractUser):
     gender = models.CharField(max_length=20, choices=GENDER, null=True)
     mobile = models.CharField(max_length=12, null=True)
     owner_name = models.CharField(max_length=50)
-    owner_image = models.ImageField(upload_to="owner_images", null=True, blank=True)
+    owner_image = models.ImageField(upload_to="owner_images/", null=True, blank=True)
     owner_mobile = models.CharField(max_length=12)
     usertype = models.CharField(choices=USER_TYPE, max_length=50, default="Guest")
 

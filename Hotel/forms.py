@@ -17,8 +17,7 @@ class HotelRegistration(forms.ModelForm):
                 "address",
                 "location",
                 "star_rating",
-                "owner_name",
-                "password",
+
 
                 ]
         widgets = {
@@ -49,3 +48,14 @@ class Registration(forms.ModelForm):
         "password": forms.PasswordInput(attrs={"class": "form-control", "placeholder": "password1"}),
 
     }
+
+class AddRoomForm(forms.ModelForm):
+    class Meta:
+        model=Room
+        fields="__all__"
+
+
+class EditRoomForm(forms.ModelForm):
+    class Meta:
+        model=Room
+        exclude=("hotel",)

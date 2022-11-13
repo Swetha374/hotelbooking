@@ -8,15 +8,17 @@ from Admin.models import User
 
 
 class Hotel(models.Model):
-
-    hotel_name= models.CharField(max_length=120)
-    image=models.ImageField(upload_to="images",null=True)
+    hotel_name= models.CharField(max_length=120,unique=True)
+    image=models.ImageField(upload_to="images/",null=True)
     address=models.TextField(max_length=120)
     location=models.CharField(max_length=50)
     star_rating=models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     password=models.CharField(max_length=50)
-    owner_name = models.OneToOneField(User, on_delete=models.CASCADE)  # one to one relation
+    owner_name = models.ForeignKey(User, on_delete=models.CASCADE)  # one to one relation
     username=models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.hotel_name
 
 class Room(models.Model):
     room_name=models.CharField(max_length=20)
@@ -30,6 +32,8 @@ class Room(models.Model):
     hotel=models.ForeignKey(Hotel,on_delete=models.CASCADE)
     occupancy_adult=models.PositiveIntegerField()
     occupancy_child=models.PositiveIntegerField()
+
+
 
 
 class Booking(models.Model):

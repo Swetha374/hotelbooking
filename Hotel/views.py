@@ -42,7 +42,7 @@ def hotel_registration(request):
     if request.method == "POST":
         form=forms.HotelRegistration(request.POST, files=request.FILES)
         if form.is_valid():
-            form.instance.owner=request.user
+            form.instance.owner_name=request.user
             form.save()
             messages.success(request,"your hotel has been added")
             return redirect("list-hotel")
@@ -63,6 +63,7 @@ def registration(request):
             user.set_password(form.cleaned_data.get('password'))
             user.save()
             messages.success(request,"your account has been created")
+            return redirect("signin")
 
     else:
         messages.error(request, "registration failed")
@@ -73,6 +74,83 @@ def registration(request):
 @signin_required
 def hotel_home(request):
     return render(request,"home.html")
-
+@signin_required
 def list_hotel(request):
-    return render(request,"list-hotel.html")
+   hotel_list=Hotel.objects.filter(owner_name=request.user)
+   return render(request,"list-hotel.html",{"hotel":hotel_list})
+
+@signin_required
+def hotel_detail(request, *args, **kwargs):
+    id=kwargs.get("id")
+    print(id)
+    hotel_detail=Hotel.objects.get(id=id)
+    return render(request,"hotel-detail.html",{"hotels":hotel_detail})
+
+@signin_required
+def delete_hotel(request,*args,**kwargs):
+    print(request.user.is_authenticated)
+    id=kwargs.get("id")
+    hotel=Hotel.objects.get(id=id).delete()
+    return redirect("list-hotel")
+
+# def add_room(request):
+#     if request.method == "GET":
+#         form = forms.AddRoomForm()
+#         return render(request, "add-room.html", {"form": form})
+#     if request.method == "POST":
+#         form = forms.AddRoomForm(request.POST)
+#         if form.is_valid():
+#             form.cleaned_data["hotel"] = Hotel.objects.get(owner_name=request.user)
+#             Room.objects.create(**form.cleaned_data)
+#             # form.instance.user=request.user
+#             # form.save()
+#             messages.success(request, "Room added succesfully")
+#         return redirect("list-room")
+#     else:
+#         messages.error(request, "failed to add")
+#     return render(request, "add-room.html", {"form": form})
+
+def add_room(request):
+    if request.method == "GET":
+        form = forms.AddRoomForm()
+        return render(request, "add-room.html", {"form": form})
+    if request.method == "POST":
+         form=forms.AddRoomForm(request.POST)
+         if form.is_valid():
+            form.instance.user=request.user
+            form.save()
+            messages.success(request,"Room added succesfully")
+            return redirect("list-room")
+    else:
+        messages.error(request,"failed to add")
+    return render(request, "add-room.html", {"form":form})
+
+def list_room(request):
+    room_list = Room.objects.all()
+    return render(request, "list-room.html", {"room": room_list})
+
+def edit_room(request,*args,**kwargs):
+    if request.method == "GET":
+        id=kwargs.get("id")
+        room=Room.objects.get(id=id)
+        form=forms.EditRoomForm(instance=room) #blank form alla eth todonte instance vachano form initialize cheyende ath
+        return render(request,"edit-room.html",{"form":form})
+    if request.method == "POST":
+        id= kwargs.get("id")
+        room =Room.objects.get(id=id)
+        form=forms.EditRoomForm(request.POST,instance=room) #update aanenkil mention cheyanam instance
+        if form.is_valid():
+            form.save()
+            msg="Room details has been updated"
+            messages.success(request,msg) #to show messages  messages.add_message(request,msg content)
+            return redirect("list-room")
+        else:
+            msg="room update failed"
+            messages.error(request,msg)
+            return render(request, "edit.html", {"form": form})
+
+def delete_room(request,*args,**kwargs):
+    print(request.user.is_authenticated)
+    id=kwargs.get("id")
+    room=Room.objects.get(id=id).delete()
+    return redirect("list-room")

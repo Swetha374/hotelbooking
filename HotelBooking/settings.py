@@ -57,6 +57,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'HotelBooking.urls'
 AUTH_USER_MODEL='Admin.User'
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 AUTHENTICATION_BACKENDS=[
     'django.contrib.auth.backends.ModelBackend'
 ]

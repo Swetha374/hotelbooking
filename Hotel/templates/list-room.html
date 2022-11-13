@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <title>Dashboard - Admin</title>
+    <title>Dashboard - Hotel</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet"/>
     <link href="{%static 'owner/css/styles.css'%}" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -25,9 +25,11 @@
         <div class="col-4"></div>
     </div>
     <div class="row">
-        <div class="col-4"></div>
         <div class="col-4">
-            <div><h2><em>Hotel list</em></h2></div>
+             <div class="hclass"><a href="{%url 'add-room'%}">Add Room</a></div>
+        </div>
+        <div class="col-4">
+            <div><h2><em>Rooms list</em></h2></div>
             {%if messages%}
                 {%for m in messages%}
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -43,40 +45,36 @@
     <div class="row">
         <div class="col-2"></div>
             <div class="col-8">
-                 {%if hotel%}
+                 {%if room%}
                 <table class="table">
                     <tr>
-                        <th>Hotel name</th>
-                        <th>Hotel image</th>
-                        <th>Address</th>
-                        <th>Location</th>
-                        <th>star rating</th>
-                        <th>owner name</th>
+                        <th>Room name</th>
+                        <th>Status</th>
+                        <th>price</th>
+                        <th>Hotel</th>
+                        <th>occupancy_adult</th>
+                        <th>occupancy_child</th>
 
 
 
                     </tr>
-                    {%for h in hotel%}
+                    {%for r in room%}
                     <tr>
-                        <td>{{h.hotel_name}}</td>
-                       <td><img class="card-img-top" src="{{h.image.url}}" alt="" height="60"></td>
-                        <td>{{h.address}}</td>
-                        <td>{{h.location}}</td>
-                        <td>{{h.star_rating}}</td>
-                        <td>{{h.owner_name}}</td>
-                         <td>
-
-                            <a href="{%url 'list-room' %}" class="btn btn-outline-info">view</a>
-                              <a href="{%url 'delete-hotel' h.id %}" class="btn btn-outline-info">Delete</a>
-
-                        </td>
+                        <td>{{r.room_name}}</td>
+                         <td>{{r.availability}}</td>
+                         <td>{{r.price}}</td>
+                        <td>{{r.hotel}}</td>
+                         <td>{{r.occupancy_adult}}</td>
+                         <td>{{r.occupancy_child}}</td>
+                        <td> <a href="{%url 'edit-room' r.id %}" class="btn btn-outline-warning">Edit</a></td>
+                         <td> <a href="{%url 'delete-room' r.id %}" class="btn btn-outline-warning">Delete</a></td>
 
 
                     </tr>
                     {%endfor%}
                 </table>
                 {%else%}
-                <h2 class="text-danger">No hotel added</h2>
+                <h2 class="text-danger">No Room added</h2>
                 {%endif%}
         </div>
         <div class="col-2"></div>

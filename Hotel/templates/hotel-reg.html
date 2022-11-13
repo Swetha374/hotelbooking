@@ -33,7 +33,9 @@
                             <div class="card-body ">
                                 <div class="container ">
                                     <div class="row">
-                                        <div class="col-4"></div>
+                                        <div class="col-4">
+                                             <a href="{%url 'hotel-home' %}" class="btn btn-outline-info">Home</a>
+                                        </div>
                                         <div class="col-4">
                                             {%if messages%}
                                             {%for m in messages%}
@@ -54,7 +56,7 @@
                                                 {%csrf_token%}
                                                 {{form.as_p}}
                                                <div class="mb-3">
-                    <button type="submit">SignUp</button>
+                    <button type="submit">Register</button>
                 </div>
                                             </form>
                                         </div>
