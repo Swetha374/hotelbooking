@@ -93,22 +93,7 @@ def delete_hotel(request,*args,**kwargs):
     hotel=Hotel.objects.get(id=id).delete()
     return redirect("list-hotel")
 
-# def add_room(request):
-#     if request.method == "GET":
-#         form = forms.AddRoomForm()
-#         return render(request, "add-room.html", {"form": form})
-#     if request.method == "POST":
-#         form = forms.AddRoomForm(request.POST)
-#         if form.is_valid():
-#             form.cleaned_data["hotel"] = Hotel.objects.get(owner_name=request.user)
-#             Room.objects.create(**form.cleaned_data)
-#             # form.instance.user=request.user
-#             # form.save()
-#             messages.success(request, "Room added succesfully")
-#         return redirect("list-room")
-#     else:
-#         messages.error(request, "failed to add")
-#     return render(request, "add-room.html", {"form": form})
+
 
 def add_room(request,*args,**kwargs):
     id=kwargs.get("id")
@@ -119,9 +104,6 @@ def add_room(request,*args,**kwargs):
         if form.is_valid():
             form.cleaned_data["hotel"] = hotel
             Room.objects.create(**form.cleaned_data)
-            # form.save()
-            # form.cleaned_data["theater"]=Theater.objects.get(owner=request.user)  #For 1 to 1 User
-            # Screen.objects.create(**form.cleaned_data)
             messages.success(request, "Room added succesfully")
             return redirect("list-room")
         else:
@@ -129,20 +111,6 @@ def add_room(request,*args,**kwargs):
             return render(request, "add-room.html", {"form": form})
     return render(request, "add-room.html", {"form": form})
 
-
-    # if request.method == "GET":
-    #     form = forms.AddRoomForm()
-    #     return render(request, "add-room.html", {"form": form})
-    # if request.method == "POST":
-    #      form=forms.AddRoomForm(request.POST)
-    #      if form.is_valid():
-    #         form.instance.user=request.user
-    #         form.save()
-    #         messages.success(request,"Room added succesfully")
-    #         return redirect("list-room")
-    # else:
-    #     messages.error(request,"failed to add")
-    # return render(request, "add-room.html", {"form":form})
 
 def list_room(request):
     room_list = Room.objects.all()
@@ -152,16 +120,16 @@ def edit_room(request,*args,**kwargs):
     if request.method == "GET":
         id=kwargs.get("id")
         room=Room.objects.get(id=id)
-        form=forms.EditRoomForm(instance=room) #blank form alla eth todonte instance vachano form initialize cheyende ath
+        form=forms.EditRoomForm(instance=room)
         return render(request,"edit-room.html",{"form":form})
     if request.method == "POST":
         id= kwargs.get("id")
         room =Room.objects.get(id=id)
-        form=forms.EditRoomForm(request.POST,instance=room) #update aanenkil mention cheyanam instance
+        form=forms.EditRoomForm(request.POST,instance=room)
         if form.is_valid():
             form.save()
             msg="Room details has been updated"
-            messages.success(request,msg) #to show messages  messages.add_message(request,msg content)
+            messages.success(request,msg)
             return redirect("list-room")
         else:
             msg="room update failed"
