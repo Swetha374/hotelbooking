@@ -112,18 +112,18 @@ def delete_hotel(request,*args,**kwargs):
 
 def add_room(request,*args,**kwargs):
     id=kwargs.get("id")
-    hotel=Hotel.objects.filter(id=id)
-    form =forms.AddRoomForm(instance=hotel)
+    hotel=Hotel.objects.get(id=id)
+    form =forms.AddRoomForm()
     if request.method == "POST":
-        form = forms.AddRoomForm(request.POST, instance=hotel)
+        form = forms.AddRoomForm(request.POST)
         if form.is_valid():
             form.cleaned_data["hotel"] = hotel
             Room.objects.create(**form.cleaned_data)
-            form.save()
+            # form.save()
             # form.cleaned_data["theater"]=Theater.objects.get(owner=request.user)  #For 1 to 1 User
             # Screen.objects.create(**form.cleaned_data)
-            messages.success(request, "Screen have been added")
-            return redirect("list_room")
+            messages.success(request, "Room added succesfully")
+            return redirect("list-room")
         else:
             messages.success(request, "Room adding Failed")
             return render(request, "add-room.html", {"form": form})
