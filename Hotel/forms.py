@@ -53,7 +53,7 @@ class AddRoomForm(forms.ModelForm):
     class Meta:
         model=Room
         fields="__all__"
-
+        exclude = ("hotel",)
 
 class EditRoomForm(forms.ModelForm):
     class Meta:

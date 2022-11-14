@@ -110,20 +110,39 @@ def delete_hotel(request,*args,**kwargs):
 #         messages.error(request, "failed to add")
 #     return render(request, "add-room.html", {"form": form})
 
-def add_room(request):
-    if request.method == "GET":
-        form = forms.AddRoomForm()
-        return render(request, "add-room.html", {"form": form})
+def add_room(request,*args,**kwargs):
+    id=kwargs.get("id")
+    hotel=Hotel.objects.filter(id=id)
+    form =forms.AddRoomForm(instance=hotel)
     if request.method == "POST":
-         form=forms.AddRoomForm(request.POST)
-         if form.is_valid():
-            form.instance.user=request.user
+        form = forms.AddRoomForm(request.POST, instance=hotel)
+        if form.is_valid():
+            form.cleaned_data["hotel"] = hotel
+            Room.objects.create(**form.cleaned_data)
             form.save()
-            messages.success(request,"Room added succesfully")
-            return redirect("list-room")
-    else:
-        messages.error(request,"failed to add")
-    return render(request, "add-room.html", {"form":form})
+            # form.cleaned_data["theater"]=Theater.objects.get(owner=request.user)  #For 1 to 1 User
+            # Screen.objects.create(**form.cleaned_data)
+            messages.success(request, "Screen have been added")
+            return redirect("list_room")
+        else:
+            messages.success(request, "Room adding Failed")
+            return render(request, "add-room.html", {"form": form})
+    return render(request, "add-room.html", {"form": form})
+
+
+    # if request.method == "GET":
+    #     form = forms.AddRoomForm()
+    #     return render(request, "add-room.html", {"form": form})
+    # if request.method == "POST":
+    #      form=forms.AddRoomForm(request.POST)
+    #      if form.is_valid():
+    #         form.instance.user=request.user
+    #         form.save()
+    #         messages.success(request,"Room added succesfully")
+    #         return redirect("list-room")
+    # else:
+    #     messages.error(request,"failed to add")
+    # return render(request, "add-room.html", {"form":form})
 
 def list_room(request):
     room_list = Room.objects.all()
