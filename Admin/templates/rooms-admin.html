@@ -44,21 +44,22 @@
     </ul>
 </nav>
 
-
-<div>
 <div class="container mt-5">
     <div class="row">
         <div class="col-4">
 
         </div>
+        <div class="col-4">
 
+        </div>
 
         <div class="col-4"></div>
     </div>
     <div class="row">
-        <div class="col-4"></div>
         <div class="col-4">
-            <div><h2><em>List of hotels</em></h2></div>
+        </div>
+        <div class="col-4">
+            <div><h2><em>Rooms Available</em></h2></div>
             {%if messages%}
                 {%for m in messages%}
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -74,48 +75,42 @@
     <div class="row">
         <div class="col-2"></div>
             <div class="col-8">
-                 {%if hotels%}
+                 {%if roomss%}
                 <table class="table">
                     <tr>
-                        <th>Hotel name</th>
-                        <th>Hotel image</th>
-                        <th>Address</th>
-                        <th>Location</th>
-                        <th>star rating</th>
-                        <th>owner name</th>
+                        <th>Room name</th>
+                        <th>Status</th>
+                        <th>price</th>
+                        <th>Hotel</th>
+                        <th>occupancy_adult</th>
+                        <th>occupancy_child</th>
 
 
 
                     </tr>
-                    {%for h in hotels%}
+                    {%for r in roomss%}
                     <tr>
-                        <td>{{h.hotel_name}}</td>
-                       <td><img class="card-img-top" src="{{h.image.url}}" alt="" height="60"></td>
-                        <td>{{h.address}}</td>
-                        <td>{{h.location}}</td>
-                        <td>{{h.star_rating}}</td>
-                        <td>{{h.owner_name}}</td>
-                         <td>
-
-                            <a href="{%url 'rooms-admin' h.id%}" class="btn btn-outline-info">view</a>
-                              <a href="{%url 'admin-delete-hotel' h.id %}" class="btn btn-outline-info">Delete</a>
-                           <a href="{%url 'room-add' h.id%}" class="btn btn-outline-info">Add Room</a>
-
-                        </td>
+                        <td>{{r.room_name}}</td>
+                         <td>{{r.availability}}</td>
+                         <td>{{r.price}}</td>
+                        <td>{{r.hotel}}</td>
+                         <td>{{r.occupancy_adult}}</td>
+                         <td>{{r.occupancy_child}}</td>
+                         <td> <a href="{%url 'room-edit' r.id %}" class="btn btn-outline-warning">Edit</a></td>
+                         <td> <a href="{%url 'admin-delete-room' r.id %}" class="btn btn-outline-warning">Delete</a></td>
 
 
                     </tr>
                     {%endfor%}
                 </table>
                 {%else%}
-                <h2 class="text-danger">No hotel added</h2>
+                <h2 class="text-danger">No Room added</h2>
                 {%endif%}
         </div>
         <div class="col-2"></div>
     </div>
 </div>
 
-</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"

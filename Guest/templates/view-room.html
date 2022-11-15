@@ -16,7 +16,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-4">
-             <a href="{%url 'hotel-home' %}" class="btn btn-outline-info">Home</a>
+
         </div>
         <div class="col-4">
 
@@ -44,7 +44,8 @@
     <div class="row">
         <div class="col-2"></div>
             <div class="col-8">
-                 {%if room%}
+                 {%if rooms%}
+
                 <table class="table">
                     <tr>
                         <th>Room name</th>
@@ -57,24 +58,22 @@
 
 
                     </tr>
-                    {%for r in room%}
+                    {%for ro in rooms%}
                     <tr>
-                        <td>{{r.room_name}}</td>
-                         <td>{{r.availability}}</td>
-                         <td>{{r.price}}</td>
-                        <td>{{r.hotel}}</td>
-                         <td>{{r.occupancy_adult}}</td>
-                         <td>{{r.occupancy_child}}</td>
+                        <td>{{ro.room_name}}</td>
+                         <td>{{ro.availability}}</td>
+                         <td>{{ro.price}}</td>
+                        <td>{{ro.hotel}}</td>
+                         <td>{{ro.occupancy_adult}}</td>
+                         <td>{{ro.occupancy_child}}</td>
 
-                        <td> <a href="{%url 'edit-room' r.id %}" class="btn btn-outline-warning">Edit</a></td>
-                         <td> <a href="{%url 'delete-room' r.id %}" class="btn btn-outline-warning">Delete</a></td>
 
 
                     </tr>
                     {%endfor%}
                 </table>
                 {%else%}
-                <h2 class="text-danger">No Room added</h2>
+                <h2 class="text-danger">No Room found</h2>
                 {%endif%}
         </div>
         <div class="col-2"></div>

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <title>Dashboard - Admin</title>
+    <title>Dashboard - Hotel</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet"/>
     <link href="{%static 'owner/css/styles.css'%}" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -66,7 +66,7 @@
                         <td>{{h.owner_name}}</td>
                          <td>
 
-                            <a href="{%url 'list-room' %}" class="btn btn-outline-info">view</a>
+                            <a href="{%url 'list-room' h.id%}" class="btn btn-outline-info">view</a>
                               <a href="{%url 'delete-hotel' h.id %}" class="btn btn-outline-info">Delete</a>
                            <a href="{%url 'add-room' h.id%}" class="btn btn-outline-info">Add Room</a>
 

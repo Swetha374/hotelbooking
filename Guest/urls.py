@@ -22,7 +22,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
 
-   path("dashboard",views.guest_home,name="guest-home"),
-   path("logout",views.logout_view,name="logout")
+   path("dashboard/",views.guest_home,name="guest-home"),
+   path("logout",views.logout_view,name="logout"),
+   path("view/rooms/<int:id>/", views.view_room, name="view-room")
+
 
 ] +static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

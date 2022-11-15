@@ -25,6 +25,7 @@ class Room(models.Model):
     OPTIONS=(
         ("Booked","Booked"),
         ("Open","Open"),
+        ("inactive","inactive")
 
     )
     availability=models.CharField(max_length=50,choices=OPTIONS,default="Open")
