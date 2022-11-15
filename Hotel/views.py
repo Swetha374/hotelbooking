@@ -101,8 +101,7 @@ def delete_hotel(request,*args,**kwargs):
 
 
 @hotel_login
-def add_room(request,*args,**kwargs):
-        id=kwargs.get("id")
+def add_room(request,id):
         hotel=Hotel.objects.get(id=id)
         form =forms.AddRoomForm()
         if request.method == "POST":
@@ -110,8 +109,8 @@ def add_room(request,*args,**kwargs):
             if form.is_valid():
                 form.cleaned_data["hotel"] = hotel
                 Room.objects.create(**form.cleaned_data)
-                messages.success(request, "Room added succesfully")
-                return redirect("list-hotel")
+                messages.success(request, "Room added sucessfully")
+                return redirect("list-room",id=id)
             else:
                 messages.success(request, "Room adding Failed")
                 return render(request, "add-room.html", {"form": form})
