@@ -8,52 +8,57 @@
     <meta name="description" content=""/>
     <meta name="author" content=""/>
     <title>Dashboard - Hotel</title>
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet"/>
-       <link href="{%static 'owner/css/styles.css'%}" rel="stylesheet"/>
+   <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet"/>
+    <link href="{%static 'owner/css/styles.css'%}" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-2">
-        </div>
+        <div class="col-2"></div>
         <div class="col-8">
             <table class="table">
+                {%if roombookings%}
                 <tr>
-                    {%if active%}
-                    <th>Guest Name</th>
+                    <th>Guest</th>
+                    <th>Guest added by owner</th>
                     <th>Mobile</th>
                     <th>Room</th>
+                    <th>Hotel</th>
                     <th>stay_start_date</th>
                     <th>stay_end_date</th>
                     <th>Adult</th>
                     <th>Child</th>
-                    <th>Hotel</th>
                    <th>Status</th>
                     <th>No of days</th>
                     <th>Total price</th>
                 </tr>
-                {%for a in active%}
+                {%for rb in roombookings%}
                 <tr>
-                    <td>{{a.guest.name}}</td>
-                    <td>{{a.guest.mobile}}</td>
-                    <td>{{a.room}}</td>
-                    <td>{{a.stay_start_date}}</td>
-                    <td>{{a.stay_end_date}}</td>
-                    <td>{{a.occupancy_adult}}</td>
-                    <td>{{a.occupancy_child}}</td>
-                    <td>{{a.room.hotel}}</td>
-                    <td>{{a.status}}</td>
-                    <td>{{a.no_of_days}}</td>
-                    <td>{{a.total}}</td>
+                    <td>{{rb.guest.name}}</td>
+                    <td>{{rb.guest_name}}</td>
+                    <td>{{rb.guest.mobile}}</td>
+                    <td>{{rb.room}}</td>
+                    <td>{{rb.room.hotel}}</td>
+                    <td>{{rb.stay_start_date}}</td>
+                    <td>{{rb.stay_end_date}}</td>
+                    <td>{{rb.occupancy_adult}}</td>
+                    <td>{{rb.occupancy_child}}</td>
+                    <td>{{rb.status}}</td>
+                    <td>{{rb.no_of_days}}</td>
+                    <td>{{rb.total}}</td>
 
                 </tr>
+
+
                 {%endfor%}
 
-            </table>
-              {%else%}
+                </table>
+                {%else%}
                 <h2 class="text-danger">No bookings added</h2>
                 {%endif%}
+
+            </table>
         </div>
         <div class="col-2"></div>
     </div>

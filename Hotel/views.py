@@ -237,23 +237,7 @@ def edit_booking_view(request, *args, **kwargs):
         return render(request, "booking-list.html")
 
 
-# def delete_booking(request, *args, **kwargs):
-#     id = kwargs.get("id")
-#     booking = Booking.objects.get(id=id).delete()
-#     return redirect("booking-list")
-
-
-def price_total(request):
-    book = Booking.objects.filter(user=request.user)
-    for bkng in book:
-        if bkng.occupancy_adult > bkng.room.occupancy_adult and bkng.occupancy_child > bkng.room.occupancy_child:
-            Booking.objects.delete(id=bkng.id)
-
-    bookingitems = Booking.objects.filter(user=request.user)
-    total_price = 0
-    for bkng in bookingitems:
-        total_price = (total_price + bkng.room.price_of_adult * bkng.occupancy_adult) + (
-                    total_price + bkng.room.price_of_child * bkng.occupancy_child)
-        print(total_price)
-    context = {'bookingitems': bookingitems, 'total_price': total_price}
-    return render(request, "list-booking.html", context)
+def view_room_bookings(request,id):
+    room= Room.objects.get(id=id)
+    bookings = Booking.objects.filter(room=room,status="Accepted")
+    return render(request, "view-room-bookings.html", {"roombookings": bookings})

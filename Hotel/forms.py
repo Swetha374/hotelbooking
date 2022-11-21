@@ -92,7 +92,7 @@ class OwnerEditBookingForm(forms.ModelForm):
     class Meta:
         model=Booking
         fields = "__all__"
-        exclude=("room","guest","guest_name","guest_mobile","no_of_days")
+        exclude=("room","guest","guest_name","guest_mobile","no_of_days","total")
 
 class GuestEditBookingForm(forms.ModelForm):
     class Meta:

@@ -20,6 +20,7 @@ urlpatterns=[
     path("edit/booking/<int:id>", views.edit_booking_view, name="edit-booking-hotel"),
     path("delete/booking/<int:id>", views.delete_booking_hotel, name="delete-booking-hotel"),
     path("hotel/book/room/<int:id>/", views.owner_booking_view, name="owner-booking"),
+    path("list/bookings/room/<int:id>", views.view_room_bookings, name="view-room-bookings"),
 
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
