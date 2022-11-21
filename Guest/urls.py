@@ -24,7 +24,11 @@ urlpatterns = [
 
    path("dashboard/",views.guest_home,name="guest-home"),
    path("logout",views.logout_view,name="logout"),
-   path("view/rooms/<int:id>/", views.view_room, name="view-room")
+   path("view/rooms/<int:id>/", views.view_room, name="view-room"),
+   path("book/room/<int:id>/",views.booking_view,name="guest-booking"),
+   path("list/booking/",views.guest_booking_list,name="guest-booking-list"),
+   path("edit/booking/<int:id>/",views.guest_edit_booking_view,name="guest-edit-booking"),
+   path("list/delete/booking/<int:id>",views.delete_booking,name="delete-booking"),
 
 
 ] +static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Dashboard - Hotel</title>
+   <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet"/>
+    <link href="{%static 'owner/css/styles.css'%}" rel="stylesheet"/>
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <table class="table">
+                {%if bookingslist%}
+                <tr>
+                    <th>Guest</th>
+                    <th>Guest added by owner</th>
+                    <th>Mobile</th>
+                    <th>Room</th>
+                    <th>Hotel</th>
+                    <th>stay_start_date</th>
+                    <th>stay_end_date</th>
+                    <th>Adult</th>
+                    <th>Child</th>
+                   <th>Status</th>
+                    <th>No of days</th>
+                    <th>Total price</th>
+                </tr>
+                {%for bk in bookingslist%}
+                <tr>
+                    <td>{{bk.guest.name}}</td>
+                    <td>{{bk.guest_name}}</td>
+                    <td>{{bk.guest.mobile}}</td>
+                    <td>{{bk.room}}</td>
+                    <td>{{bk.room.hotel}}</td>
+                    <td>{{bk.stay_start_date}}</td>
+                    <td>{{bk.stay_end_date}}</td>
+                    <td>{{bk.occupancy_adult}}</td>
+                    <td>{{bk.occupancy_child}}</td>
+                    <td>{{bk.status}}</td>
+                    <td>{{bk.no_of_days}}</td>
+                    <td>{{bk.total}}</td>
+
+                </tr>
+                <td>
+
+                        <a href="{%url 'edit-booking-hotel' bk.id%}" class="btn btn-outline-info">Edit</a>
+                         </td>
+                        <td>
+                         <a href="{%url 'delete-booking-hotel' bk.id%}" class="btn btn-outline-danger">Delete</a>
+                    </td>
+
+                {%endfor%}
+
+                </table>
+                {%else%}
+                <h2 class="text-danger">No bookings added</h2>
+                {%endif%}
+
+            </table>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
+</body>
+</html>

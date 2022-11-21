@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <title>Dashboard - Hotel</title>
+    <title>Dashboard - Guest</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet"/>
-    <link href="{%static 'owner/css/styles.css'%}" rel="stylesheet"/>
+    <link href="{%static 'css/styles.css'%}" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 <body >
@@ -42,7 +42,9 @@
 
     </div>
     <div class="row">
-        <div class="col-2"></div>
+        <div class="col-2">
+            <a href="{{request.META.HTTP_REFERER|escape}}"><</a>
+        </div>
             <div class="col-8">
                  {%if rooms%}
 
@@ -50,7 +52,8 @@
                     <tr>
                         <th>Room name</th>
                         <th>Status</th>
-                        <th>price</th>
+                        <th>price of adult</th>
+                        <th>price of child</th>
                         <th>Hotel</th>
                         <th>occupancy_adult</th>
                         <th>occupancy_child</th>
@@ -59,14 +62,21 @@
 
                     </tr>
                     {%for ro in rooms%}
+
                     <tr>
                         <td>{{ro.room_name}}</td>
                          <td>{{ro.availability}}</td>
-                         <td>{{ro.price}}</td>
+                         <td>{{ro.price_of_adult}}</td>
+                         <td>{{ro.price_of_child}}</td>
                         <td>{{ro.hotel}}</td>
                          <td>{{ro.occupancy_adult}}</td>
                          <td>{{ro.occupancy_child}}</td>
+                         <td>
 
+
+                           <a href="{%url 'guest-booking' ro.id %}" class="btn btn-outline-info" type="submit">Book now</a>
+
+                        </td>
 
 
                     </tr>

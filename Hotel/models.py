@@ -24,15 +24,20 @@ class Room(models.Model):
     room_name=models.CharField(max_length=20)
     OPTIONS=(
         ("Booked","Booked"),
-        ("Open","Open"),
+        ("Active","Active"),
         ("inactive","inactive")
 
     )
-    availability=models.CharField(max_length=50,choices=OPTIONS,default="Open")
-    price=models.PositiveIntegerField()
-    hotel=models.ForeignKey(Hotel,on_delete=models.CASCADE)
+    availability=models.CharField(max_length=50,choices=OPTIONS,default="Active")
+    price_of_adult=models.FloatField(default=2000.0)
+    price_of_child=models.FloatField(default=1000.0)
+    hotel=models.ForeignKey(Hotel,on_delete=models.CASCADE,related_name="Hotel")
     occupancy_adult=models.PositiveIntegerField()
     occupancy_child=models.PositiveIntegerField()
+
+
+    def __str__(self):
+        return self.room_name
 
 
 
@@ -42,12 +47,17 @@ class Booking(models.Model):
         ("Pending","Pending"),
         ("Accepted","Accepted"),
         ("Rejected","Rejected"),
-        ("Expired","Expired")
+        ("Cancelled","Cancelled")
     )
-    status=models.CharField(max_length=50,choices=OPTIONS)
+    status=models.CharField(max_length=50,choices=OPTIONS,default="Pending")
     occupancy_adult = models.PositiveIntegerField()
     occupancy_child = models.PositiveIntegerField()
     guest=models.ForeignKey(User,on_delete=models.CASCADE)
+    guest_name=models.CharField(max_length=50,default="-")
+    guest_mobile=models.CharField(max_length=12, null=True,blank=True)
     room=models.ForeignKey(Room,on_delete=models.CASCADE)
+    total=models.FloatField()
     stay_start_date=models.DateField()
     stay_end_date=models.DateField()
+    no_of_days=models.IntegerField()
+

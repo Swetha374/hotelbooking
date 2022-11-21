@@ -49,10 +49,13 @@
                     <tr>
                         <th>Room name</th>
                         <th>Status</th>
-                        <th>price</th>
+                        <th>price of adult</th>
+                        <th>price of child</th>
                         <th>Hotel</th>
                         <th>occupancy_adult</th>
                         <th>occupancy_child</th>
+
+
 
 
 
@@ -61,21 +64,33 @@
                     <tr>
                         <td>{{r.room_name}}</td>
                          <td>{{r.availability}}</td>
-                         <td>{{r.price}}</td>
+                         <td>{{r.price_of_adult}}</td>
+                         <td>{{r.price_of_child}}</td>
                         <td>{{r.hotel}}</td>
                          <td>{{r.occupancy_adult}}</td>
                          <td>{{r.occupancy_child}}</td>
 
+
+
                         <td> <a href="{%url 'edit-room' r.id %}" class="btn btn-outline-warning">Edit</a></td>
+                         {%if r.availability != "Active"%}
                          <td> <a href="{%url 'delete-room' r.id %}" class="btn btn-outline-warning">Delete</a></td>
+                        {%endif%}
+                         <td>
+
+                             <a href="{%url 'owner-booking' r.id %}" class="btn btn-outline-info" type="submit">Book now</a>
+
+                        </td>
 
 
                     </tr>
+
                     {%endfor%}
                 </table>
                 {%else%}
                 <h2 class="text-danger">No Room added</h2>
                 {%endif%}
+
         </div>
         <div class="col-2"></div>
     </div>

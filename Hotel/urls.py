@@ -15,7 +15,11 @@ urlpatterns=[
     path("list/room/<int:id>", views.list_room, name="list-room"),
     path("room/edit/<int:id>",views.edit_room,name="edit-room"),
     path("remove/room/<int:id>", views.delete_room, name="delete-room"),
-
+    path("list/bookings/", views.booking_pending_list_view, name="booking-list"),
+    path("list/bookings/active/", views.booking_active_list_view, name="active-booking-list"),
+    path("edit/booking/<int:id>", views.edit_booking_view, name="edit-booking-hotel"),
+    path("delete/booking/<int:id>", views.delete_booking_hotel, name="delete-booking-hotel"),
+    path("hotel/book/room/<int:id>/", views.owner_booking_view, name="owner-booking"),
 
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Dashboard - Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet"/>
+       <link href="{%static 'owner/css/styles.css'%}" rel="stylesheet"/>
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+        </div>
+        <div class="col-8">
+            <table class="table">
+                <tr>
+                    <th>Guest Name</th>
+                    <th>Mobile</th>
+                    <th>Room</th>
+                    <th>stay_start_date</th>
+                    <th>stay_end_date</th>
+                    <th>Adult</th>
+                    <th>Child</th>
+                    <th>Price</th>
+                    <th>Hotel</th>
+                   <th>Status</th>
+                </tr>
+                {%for a in active%}
+                <tr>
+                    <td>{{a.guest.name}}</td>
+                    <td>{{a.guest.mobile}}</td>
+                    <td>{{a.room}}</td>
+                    <td>{{a.stay_start_date}}</td>
+                    <td>{{a.stay_end_date}}</td>
+                    <td>{{a.occupancy_adult}}</td>
+                    <td>{{a.occupancy_child}}</td>
+                    <td>{{a.room.price}}</td>
+                    <td>{{a.room.hotel}}</td>
+                    <td>{{a.status}}</td>
+
+
+                </tr>
+                {%endfor%}
+            </table>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
+</body>
+</html>

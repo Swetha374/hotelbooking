@@ -53,9 +53,50 @@ class AddRoomForm(forms.ModelForm):
     class Meta:
         model=Room
         fields="__all__"
-        exclude = ("hotel",)
+        exclude = ("hotel","total_price")
 
 class EditRoomForm(forms.ModelForm):
     class Meta:
         model=Room
         exclude=("hotel",)
+
+class GuestEditRoomForm(forms.ModelForm):
+    class Meta:
+        model=Room
+        exclude=("availability","hotel","price","room_name")
+
+class BookingForm(forms.ModelForm):
+    class Meta:
+        model=Booking
+        fields = "__all__"
+        exclude=("guest_name","guest_mobile","status","guest","room","no_of_days","total")
+
+        widgets={
+           "stay_start_date":forms.DateInput(attrs={"class":"form-control","type":"date"}),
+            "stay_end_date": forms.DateInput(attrs={"class": "form-control", "type": "date"})
+        }
+
+class OwnerBookingForm(forms.ModelForm):
+    class Meta:
+        model=Booking
+        fields="__all__"
+        exclude=("guest","status","room","no_of_days","total")
+
+        widgets = {
+            "stay_start_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "stay_end_date": forms.DateInput(attrs={"class": "form-control", "type": "date"})
+        }
+
+
+class OwnerEditBookingForm(forms.ModelForm):
+    class Meta:
+        model=Booking
+        fields = "__all__"
+        exclude=("room","guest","guest_name","guest_mobile","no_of_days")
+
+class GuestEditBookingForm(forms.ModelForm):
+    class Meta:
+        model=Booking
+        fields = "__all__"
+        exclude=("room","guest","guest_name","guest_mobile","status",)
+
