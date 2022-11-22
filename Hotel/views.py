@@ -171,12 +171,29 @@ def owner_booking_view(request, id):
     if request.method == "POST":
         form = forms.OwnerBookingForm(request.POST)
         if form.is_valid():
-            for each_book in Booking.objects.all().filter(room=roomm):
-                if str(each_book.stay_start_date) < str(form.cleaned_data['stay_start_date']) and str(
-                        each_book.stay_end_date) < str(form.cleaned_data['stay_end_date']):
+            if form.cleaned_data["occupancy_adult"] <= roomm.occupancy_adult and form.cleaned_data["occupancy_child"] <= roomm.occupancy_child:
+                pass
+            else:
+                messages.error(request, "occupancy out of limit")
+                return render(request, "owner-booking.html", {"form": form})
+            form.cleaned_data["no_of_days"] = (
+                    form.cleaned_data["stay_end_date"] - form.cleaned_data["stay_start_date"]).days
+            form.cleaned_data["total"] = (form.cleaned_data["occupancy_adult"] * roomm.price_of_adult) * \
+                                         form.cleaned_data['no_of_days'] + (form.cleaned_data[
+                                                                                "occupancy_child"] * roomm.price_of_child) * \
+                                         form.cleaned_data['no_of_days']
+
+            if datetime.date.today() <= form.cleaned_data["stay_start_date"] < form.cleaned_data["stay_end_date"]:
+                pass
+            else:
+                messages.error(request, "invalid date")
+                return render(request, "owner-booking.html", {"form": form})
+            for each_book in Booking.objects.filter(room=roomm):
+                if str(each_book.stay_start_date) < str(request.POST['stay_start_date']) and str(
+                        each_book.stay_end_date) < str(request.POST['stay_start_date']):
                     pass
-                elif str(each_book.stay_start_date) > str(form.cleaned_data['stay_start_date']) and str(
-                        each_book.stay_end_date) > str(form.cleaned_data['stay_end_date']):
+                elif str(each_book.stay_start_date) > str(request.POST['stay_end_date']) and str(
+                        each_book.stay_end_date) > str(request.POST['stay_end_date']):
                     pass
                 else:
                     messages.warning(request, "Sorry This Room is unavailable for Booking")
@@ -184,10 +201,6 @@ def owner_booking_view(request, id):
 
             form.cleaned_data["guest"] = request.user
             form.cleaned_data["room"] = roomm
-            form.cleaned_data["no_of_days"] = (
-                    form.cleaned_data["stay_end_date"] - form.cleaned_data["stay_start_date"]).days
-            form.cleaned_data["total"] = (form.cleaned_data["occupancy_adult"] * roomm.price_of_adult)*form.cleaned_data['no_of_days'] + (form.cleaned_data["occupancy_child"] * roomm.price_of_child) * form.cleaned_data['no_of_days']
-        if datetime.date.today() <= form.cleaned_data["stay_start_date"] < form.cleaned_data["stay_end_date"]:
             Booking.objects.create(**form.cleaned_data)
             messages.success(request, "Booking added sucessfully")
             return redirect("hotel-home")

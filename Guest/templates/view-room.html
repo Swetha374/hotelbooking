@@ -12,7 +12,7 @@
     <link href="{%static 'css/styles.css'%}" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
 </head>
-<body >
+<body>
 <div class="container mt-5">
     <div class="row">
         <div class="col-4">
@@ -30,10 +30,10 @@
         <div class="col-4">
             <div><h2><em>Rooms Available</em></h2></div>
             {%if messages%}
-                {%for m in messages%}
+            {%for m in messages%}
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                  <strong>{{m}}</strong>
-                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <strong>{{m}}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             {%endfor%}
             {%endif%}
@@ -45,46 +45,44 @@
         <div class="col-2">
             <a href="{{request.META.HTTP_REFERER|escape}}"><</a>
         </div>
-            <div class="col-8">
-                 {%if rooms%}
+        <div class="col-8">
+            {%if rooms%}
 
-                <table class="table">
-                    <tr>
-                        <th>Room name</th>
-                        <th>Status</th>
-                        <th>price of adult</th>
-                        <th>price of child</th>
-                        <th>Hotel</th>
-                        <th>occupancy_adult</th>
-                        <th>occupancy_child</th>
-
-
-
-                    </tr>
-                    {%for ro in rooms%}
-
-                    <tr>
-                        <td>{{ro.room_name}}</td>
-                         <td>{{ro.availability}}</td>
-                         <td>{{ro.price_of_adult}}</td>
-                         <td>{{ro.price_of_child}}</td>
-                        <td>{{ro.hotel}}</td>
-                         <td>{{ro.occupancy_adult}}</td>
-                         <td>{{ro.occupancy_child}}</td>
-                         <td>
+            <table class="table">
+                <tr>
+                    <th>Room name</th>
+                    <th>Status</th>
+                    <th>price of adult</th>
+                    <th>price of child</th>
+                    <th>Hotel</th>
+                    <th>occupancy_adult</th>
+                    <th>occupancy_child</th>
 
 
-                           <a href="{%url 'guest-booking' ro.id %}" class="btn btn-outline-info" type="submit">Book now</a>
+                </tr>
+                {%for ro in rooms%}
 
-                        </td>
+                <tr>
+                    <td>{{ro.room_name}}</td>
+                    <td>{{ro.availability}}</td>
+                    <td>{{ro.price_of_adult}}</td>
+                    <td>{{ro.price_of_child}}</td>
+                    <td>{{ro.hotel}}</td>
+                    <td>{{ro.occupancy_adult}}</td>
+                    <td>{{ro.occupancy_child}}</td>
+                    <td>
+                        <a href="{%url 'guest-booking' ro.id %}" class="btn btn-outline-info" type="submit">Book now</a>
+                    </td>
+                    <td>
+                        <a href="{%url 'guest-view-booking' ro.id %}" class="btn btn-outline-info" >Your bookings</a>
+                    </td>
 
-
-                    </tr>
-                    {%endfor%}
-                </table>
-                {%else%}
-                <h2 class="text-danger">No Room found</h2>
-                {%endif%}
+                </tr>
+                {%endfor%}
+            </table>
+            {%else%}
+            <h2 class="text-danger">No Room found</h2>
+            {%endif%}
         </div>
         <div class="col-2"></div>
     </div>

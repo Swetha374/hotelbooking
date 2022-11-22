@@ -44,7 +44,7 @@
     <div class="row">
         <div class="col-2"></div>
             <div class="col-8">
-            {%if bookings%}
+            {%if viewbookings%}
                 <table class="table">
 
                     <tr>
@@ -56,8 +56,8 @@
                         <th>stay start</th>
                         <th>stay end</th>
 
-                        <th>Adult</th>
-                        <th>Child</th>
+                        <th>occupancy_adult</th>
+                        <th>occupancy_child</th>
                         <th>No of days</th>
                         <th>Total price</th>
 
@@ -65,33 +65,27 @@
 
 
                     </tr>
-                    {%for booki in bookings%}
+                    {%for vb in viewbookings%}
                     <tr>
-                         <td>{{booki.room.room_name}}</td>
-                        <td>{{booki.room.hotel}}</td>
-                          <td>{{booki.status}}</td>
-                        <td>{{booki.room.price_of_adult }}</td>
-                         <td>{{booki.room.price_of_child }}</td>
-                        <td>{{booki.stay_start_date}}</td>
-                        <td>{{booki.stay_end_date}}</td>
-                        <td>{{booki.occupancy_adult}}</td>
-                         <td>{{booki.occupancy_child}}</td>
-                        <td>{{booki.no_of_days}}</td>
-                        <td>{{booki.total}}</td>
+                         <td>{{vb.room.room_name}}</td>
+                        <td>{{vb.room.hotel}}</td>
+                          <td>{{vb.status}}</td>
+                        <td>{{vb.room.price_of_adult }}</td>
+                         <td>{{vb.room.price_of_child }}</td>
+                        <td>{{vb.stay_start_date}}</td>
+                        <td>{{vb.stay_end_date}}</td>
+                        <td>{{vb.occupancy_adult}}</td>
+                         <td>{{vb.occupancy_child}}</td>
+                        <td>{{vb.no_of_days}}</td>
+                        <td>{{vb.total}}</td>
 
 
-                        {%if booki.status == "Pending"%}
-                    <td>
-                        <a href="{%url 'guest-edit-booking' booki.id%}" class="btn btn-outline-info">Edit</a>
-                         </td>
-                        <td>
-                    <a href="{%url 'delete-booking' booki.id%}" class="btn btn-outline-danger">Delete</a>
-                    </td>
+
 
 
 
                     </tr>
-                    {%endif%}
+
                     {%endfor%}
 
                 </table>

@@ -29,6 +29,7 @@ urlpatterns = [
    path("list/booking/",views.guest_booking_list,name="guest-booking-list"),
    path("edit/booking/<int:id>/",views.guest_edit_booking_view,name="guest-edit-booking"),
    path("list/delete/booking/<int:id>",views.delete_booking,name="delete-booking"),
+   path("view/booking/<int:id>",views.your_bookings_room,name="guest-view-booking"),
 
 
 ] +static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
