@@ -109,10 +109,13 @@ def hotel_detail(request, *args, **kwargs):
 
 @signin_required
 def delete_hotel(request, *args, **kwargs):
-    print(request.user.is_authenticated)
-    id = kwargs.get("id")
-    hotel = Hotel.objects.get(id=id).delete()
-    return redirect("hotel-home")
+    if not Booking.objects.filter(status="Accepted"):
+        id = kwargs.get("id")
+        hotel = Hotel.objects.get(id=id).delete()
+        return redirect("hotel-home")
+    else:
+        messages.error(request,"sorry this room has active bookings  ")
+        return redirect("hotel-home")
 
 
 @hotel_login
