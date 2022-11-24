@@ -15,10 +15,18 @@
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3" href="{%url 'admin-home'%}">Hotel Home</a>
-    <!-- Sidebar Toggle-->
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
-            class="fas fa-bars"></i></button>
+    <a class="navbar-brand ps-3" href="{%url 'hotel-home'%}">Hotel Home
+    <span class="text-white"><i class="fa-sharp fa-solid fa-indian-rupee-sign"></i>
+
+{{total}}</span></a>
+
+    <div></div>
+    <!-- Sidebar <Toggle-->
+    </Toggle-->
+   <i class="fa-solid fa-user text-white"> </i>
+   <div>
+        <div class="text-white">{{request.user}}</div>
+   </div>
     <!-- Navbar Search-->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
@@ -60,45 +68,172 @@
         </div>
     </div>
 </footer>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-4">
 
-</div>
-<div class="card-footer text-center py-3">
-    <div class="hclass"><a href="{%url 'hotel-reg'%}">Add hotel</a></div>
-    <div class="jclass"><a href="{%url 'list-hotel'%}">List your hotel</a></div>
-
-</div>
-
-<div class="col-xl-3 col-md-6">
-    <div class="card bg-success text-white mb-4">
-        <div class="card-body">pending bookings</div>
-        <div class="card-footer d-flex align-items-center justify-content-between">
-            <a class="small text-white stretched-link" href="{%url 'booking-list' %}">View bookings</a>
-            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
         </div>
-    </div>
-</div>
-<div class="col-xl-3 col-md-6">
-    <div class="card bg-success text-white mb-4">
-        <div class="card-body">Active bookings</div>
-        <div class="card-footer d-flex align-items-center justify-content-between">
+<!--        <div class="col-4">-->
+<!--            <img src="{%static 'images/todo.png'%}">-->
+<!--        </div>-->
 
-            <a class="small text-white stretched-link" href="{%url 'active-booking-list' %}">view active
-                bookings</a>
-            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+        <div class="col-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+
         </div>
+        <div class="col-4">
+            {{active_count}}
+            {%if messages%}
+                {%for m in messages%}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  <strong>{{m}}</strong>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {%endfor%}
+            {%endif%}
+        </div>
+        <div class="col-4">
+
+        </div>
+
     </div>
-</div>
+    <div class="row">
+        <div class="col-2">
+
+
+
+  <a href="{%url 'hotel-reg'%}"  class="btn btn-outline-info" >Add hotel</a>
+        </div>
+            <div class="col-8">
+                 {%if hotel%}
+                <table class="table ">
+                    <tr class="table-warning ">
+                        <th>Hotel name</th>
+                        <th>Hotel image</th>
+                        <th>Address</th>
+                        <th>Location</th>
+                        <th>star rating</th>
+                        <th>owner name</th>
+                        <th>Total bookings</th>
+                        <th></th>
+                        <th>Action</th>
+                        <th></th>
+
+
+
+                    </tr>
+                    {%for h in hotel%}
+                    <tr>
+                        <td>{{h.hotel_name}}</td>
+                       <td><img class="card-img-top" src="{{h.image.url}}" alt="" height="60"></td>
+                        <td>{{h.address}}</td>
+                        <td>{{h.location}}</td>
+                        <td>{{h.star_rating}}</td>
+                        <td>{{h.owner_name}}</td>
+                        <td>{{h.total_bookings}}</td>
+
+                         <td>
+
+                            <a href="{%url 'list-room' h.id%}" class="btn btn-outline-info">view</a>
+                               </td>
+                            <td>
+                              <a href="{%url 'delete-hotel' h.id %}" class="btn btn-outline-info">Delete</a>
+                                </td>
+                        <td>
+
+                           <a href="{%url 'add-room' h.id%}" class="btn btn-outline-info">Add Room</a>
+
+                        </td>
+
+
+                    </tr>
+                    {%endfor%}
+                </table>
+                {%else%}
+                <h2 class="text-danger">No hotel added</h2>
+                {%endif%}
+        </div>
+        <div class="col-2">
+        </div>
+<!--        <div class="col-xl-3 col-md-6">-->
+<!--    <div class="card bg-success text-white mb-4">-->
+<!--        <div class="card-body">pending bookings</div>-->
+<!--        <div class="card-footer d-flex align-items-center justify-content-between">-->
+<!--            <a class="small text-white stretched-link" href="{%url 'booking-list' %}">View bookings</a>-->
+<!--            <div class="small text-white"><i class="fas fa-angle-right"></i></div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div class="col-xl-3 col-md-6">-->
+
+<!--    <div class="card bg-success text-white mb-4">-->
+<!--        <div class="card-body">Active bookings </div>-->
+
+<!--        <div class="card-footer d-flex align-items-center justify-content-between">-->
+
+<!--            <a class="small text-white stretched-link" href="{%url 'active-booking-list'  %}">view active-->
+<!--                bookings</a>-->
+
+<!--            <div class="small text-white"><i class="fas fa-angle-right"></i></div>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+<!--</div>-->
+          <div class="col-md-20 mt-8">
+<!--        <div class="card">-->
+            <div class="card-header bg-info text-center text-white col-md-12 mt=50" >
+                Booking Details
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a class="text-decoration-none text-dark" href="{%url 'booking-list' %}">
+                            <div class="card my-card shadow">
+                                <div class="card-body text-center">
+                                    <h4>Pending <i class="fas fa-users"></i></h4>
+                                    <h3>{{pcount}}</h3>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a class="text-decoration-none text-dark" href="{%url 'active-booking-list'  %}">
+                            <div class="card my-card shadow">
+                                <div class="card-body text-center">
+                                    <h4>Accepted <i class="fas fa-box"></i></h4>
+                                    <h3>{{count}}</h3>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a class="text-decoration-none text-dark" href="{%url 'active-booking-list'  %}">
+                            <div class="card my-card shadow">
+                                <div class="card-body text-center">
+                                    <h4>Revenue <i class="fas fa-box"></i></h4>
+                                    <h3>{{total}}</h3>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+    </div>
 
 </div>
 
+<!--</div>-->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
 <script src="{%static 'owner/js/scripts.js'%}"></script>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>-->
-<!--<script src="assets/demo/chart-area-demo.js"></script>-->
-<!--<script src="assets/demo/chart-bar-demo.js"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>-->
-<!--<script src="{%static 'ownerjs/datatables-simple-demo.js'%}"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="assets/demo/chart-area-demo.js"></script>
+<script src="assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script src="{%static 'ownerjs/datatables-simple-demo.js'%}"></script>
 </body>
 </html>

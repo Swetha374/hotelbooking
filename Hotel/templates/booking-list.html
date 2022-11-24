@@ -21,7 +21,8 @@
                 {%if bookingslist%}
                 <tr>
                     <th>Guest</th>
-                    <th>Guest added by owner</th>
+                    <th>Guest name(offline)</th>
+                     <th>Guest mobile(offline)</th>
                     <th>Mobile</th>
                     <th>Room</th>
                     <th>Hotel</th>
@@ -32,11 +33,13 @@
                    <th>Status</th>
                     <th>No of days</th>
                     <th>Total price</th>
+
                 </tr>
                 {%for bk in bookingslist%}
                 <tr>
                     <td>{{bk.guest.name}}</td>
                     <td>{{bk.guest_name}}</td>
+                    <td>{{bk.guest_mobile}}</td>
                     <td>{{bk.guest.mobile}}</td>
                     <td>{{bk.room}}</td>
                     <td>{{bk.room.hotel}}</td>
@@ -47,6 +50,8 @@
                     <td>{{bk.status}}</td>
                     <td>{{bk.no_of_days}}</td>
                     <td>{{bk.total}}</td>
+
+
 
                 </tr>
                 <td>

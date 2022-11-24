@@ -63,13 +63,14 @@ class EditRoomForm(forms.ModelForm):
 class GuestEditRoomForm(forms.ModelForm):
     class Meta:
         model=Room
-        exclude=("availability","hotel","price","room_name")
+        exclude=("availability","hotel","price_of_adult","price_of_child","room_name")
+
 
 class BookingForm(forms.ModelForm):
     class Meta:
         model=Booking
         fields = "__all__"
-        exclude=("guest_name","guest_mobile","status","guest","room","no_of_days","total")
+        exclude=("guest_name","guest_mobile","status","guest","room","no_of_days","total","total_bookingss")
 
         widgets={
            "stay_start_date":forms.DateInput(attrs={"class":"form-control","type":"date"}),
@@ -80,7 +81,7 @@ class OwnerBookingForm(forms.ModelForm):
     class Meta:
         model=Booking
         fields="__all__"
-        exclude=("guest","status","room","no_of_days","total")
+        exclude=("guest","status","room","no_of_days","total","total_bookingss")
 
         widgets = {
             "stay_start_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
@@ -92,11 +93,15 @@ class OwnerEditBookingForm(forms.ModelForm):
     class Meta:
         model=Booking
         fields = "__all__"
-        exclude=("room","guest","guest_name","guest_mobile","no_of_days","total")
+        exclude=("room","guest","guest_name","total_bookingss","guest_mobile","no_of_days","total","occupancy_adult","occupancy_child","stay_start_date","stay_end_date")
 
 class GuestEditBookingForm(forms.ModelForm):
     class Meta:
         model=Booking
         fields = "__all__"
-        exclude=("room","guest","guest_name","guest_mobile","status",)
+        exclude=("room","guest","total_bookingss","guest_name","guest_mobile","status","price_of_adult","price_of_child","total","no_of_days")
 
+        widgets = {
+            "stay_start_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "stay_end_date": forms.DateInput(attrs={"class": "form-control", "type": "date"})
+        }

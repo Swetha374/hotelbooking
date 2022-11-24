@@ -94,17 +94,40 @@ def logout_view(request):
 
 
 def guest_edit_booking_view(request, *args, **kwargs):
-    try:
+
         if request.method == "GET":
             id = kwargs.get("id")
             bookingss = Booking.objects.get(id=id, status="Pending")
-            form = forms.GuestEditRoomForm(instance=bookingss)
+            form = forms.GuestEditBookingForm(instance=bookingss)
             return render(request, "guest-edit-booking.html", {"form": form})
         if request.method == "POST":
             id = kwargs.get("id")
             bookingss = Booking.objects.get(id=id, status="Pending")
-            form = forms.GuestEditRoomForm(request.POST, instance=bookingss)
+
+            form = forms.GuestEditBookingForm(request.POST, instance=bookingss)
             if form.is_valid():
+                if datetime.date.today() <= form.cleaned_data["stay_start_date"] < form.cleaned_data["stay_end_date"]:
+                    pass
+                else:
+                    messages.error(request, "invalid date")
+                    return render(request, "guest-edit-booking.html", {"form": form})
+                if form.cleaned_data["occupancy_adult"] <= bookingss.room.occupancy_adult and form.cleaned_data[
+                    "occupancy_child"] <= bookingss.room.occupancy_child:
+                    pass
+                else:
+                    messages.error(request, "occupancy out of limit")
+                    return render(request, "guest-edit-booking.html", {"form": form})
+                for each_booking in Booking.objects.all():
+
+                    if str(each_booking.stay_start_date) < str(request.POST['stay_start_date']) and str(
+                            each_booking.stay_end_date) < str(request.POST['stay_start_date']):
+                        pass
+                    elif str(each_booking.stay_start_date) > str(request.POST['stay_end_date']) and str(
+                            each_booking.stay_end_date) > str(request.POST['stay_end_date']):
+                        pass
+                    else:
+                        messages.warning(request, "Sorry This date have existing bookings")
+                        return redirect("guest-booking-list")
                 form.save()
                 msg = "Booking  has been updated"
                 messages.success(request, msg)
@@ -113,8 +136,7 @@ def guest_edit_booking_view(request, *args, **kwargs):
                 msg = "Booking status update failed"
                 messages.error(request, msg)
                 return render(request, "guest-edit-booking.html", {"form": form})
-    except:
-        return render(request, "list-booking.html")
+
 
 
 def delete_booking(request, *args, **kwargs):

@@ -46,7 +46,7 @@ def hotel_registration(request):
             form.instance.owner_name = request.user
             form.save()
             messages.success(request, "your hotel has been added")
-            return redirect("list-hotel")
+            return redirect("hotel-home")
     else:
         messages.error(request, "registration failed")
     return render(request, "hotel-reg.html", {"form": form})
@@ -81,7 +81,21 @@ def hotel_home(request):
 @hotel_login
 def list_hotel(request):
     hotel = request.user.hotel_set.all()
-    return render(request, "list-hotel.html", {"hotel": hotel})
+    booking_list= Booking.objects.filter(room__hotel__owner_name=request.user, status="Accepted")
+    booking_count=booking_list.count()
+    pending= Booking.objects.exclude(status="Accepted").filter(room__hotel__owner_name=request.user).count()
+    context={}
+    sum = 0
+    context = {}
+    for i in booking_list:
+        sum += i.total
+        print(sum)
+    context["hotel"]=hotel
+    context["count"]=booking_count
+    context["pcount"]=pending
+    context["total"] = sum
+
+    return render(request, "home.html",context)
 
 
 @signin_required
@@ -98,7 +112,7 @@ def delete_hotel(request, *args, **kwargs):
     print(request.user.is_authenticated)
     id = kwargs.get("id")
     hotel = Hotel.objects.get(id=id).delete()
-    return redirect("list-hotel")
+    return redirect("hotel-home")
 
 
 @hotel_login
@@ -145,7 +159,7 @@ def edit_room(request, *args, **kwargs):
                 form.save()
                 msg = "Room details has been updated"
                 messages.success(request, msg)
-                return redirect("list-hotel")
+                return redirect("hotel-home")
             else:
                 msg = "room update failed"
                 messages.error(request, msg)
@@ -161,7 +175,7 @@ def delete_room(request, *args, **kwargs):
     id = kwargs.get("id")
     room = Room.objects.get(id=id).delete()
     messages.success(request, "Room deleted")
-    return redirect("list-hotel")
+    return redirect("hotel-home")
 
 
 def owner_booking_view(request, id):
@@ -197,7 +211,7 @@ def owner_booking_view(request, id):
                     pass
                 else:
                     messages.warning(request, "Sorry This Room is unavailable for Booking")
-                    return redirect("list-hotel")
+                    return redirect("hotel-home")
 
             form.cleaned_data["guest"] = request.user
             form.cleaned_data["room"] = roomm
@@ -211,13 +225,15 @@ def owner_booking_view(request, id):
 
 
 def booking_pending_list_view(request):
-    bookingslist = Booking.objects.exclude(status="Accepted")
+    bookingslist = Booking.objects.exclude(status="Accepted").filter(room__hotel__owner_name=request.user)
     return render(request, "booking-list.html", {"bookingslist": bookingslist})
 
 
-def booking_active_list_view(request):
-    active_bookings = Booking.objects.filter(status="Accepted")
-    return render(request, "active-booking.html", {"active": active_bookings})
+def booking_active_list_view(request,**kwargs):
+    active_bookings = Booking.objects.filter(room__hotel__owner_name=request.user,status="Accepted")
+    context={}
+    context["active"]=active_bookings
+    return render(request, "active-booking.html",context)
 
 
 def delete_booking_hotel(request, *args, **kwargs):
@@ -252,5 +268,5 @@ def edit_booking_view(request, *args, **kwargs):
 
 def view_room_bookings(request,id):
     room= Room.objects.get(id=id)
-    bookings = Booking.objects.filter(room=room,status="Accepted")
+    bookings = Booking.objects.filter(room=room,)
     return render(request, "view-room-bookings.html", {"roombookings": bookings})

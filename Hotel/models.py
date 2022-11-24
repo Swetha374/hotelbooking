@@ -15,6 +15,7 @@ class Hotel(models.Model):
     star_rating=models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     password=models.CharField(max_length=50)
     owner_name = models.ForeignKey(User, on_delete=models.CASCADE)  # one to one relation
+    total_bookings = models.IntegerField(default=0)
     username=models.CharField(max_length=50)
 
     def __str__(self):
@@ -56,6 +57,7 @@ class Booking(models.Model):
     guest_name=models.CharField(max_length=50,default="-")
     guest_mobile=models.CharField(max_length=12, null=True,blank=True)
     room=models.ForeignKey(Room,on_delete=models.CASCADE)
+    total_bookingss=models.IntegerField(default=0)
     total=models.FloatField()
     stay_start_date=models.DateField()
     stay_end_date=models.DateField()
