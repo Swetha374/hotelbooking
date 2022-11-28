@@ -23,6 +23,8 @@
                     {%if active%}
                     <th>Guest Name</th>
                     <th>Mobile</th>
+                    <th>Guest name(offline)</th>
+                    <th>Guest mob(offline)</th>
                     <th>Room</th>
                     <th>stay_start_date</th>
                     <th>stay_end_date</th>
@@ -30,24 +32,36 @@
                     <th>Child</th>
                     <th>Hotel</th>
                    <th>Status</th>
-                    <th>No of days</th>
+<!--                    <th>No of days</th>-->
                     <th>Total price</th>
+                    <th>Date</th>
+                    <th>Status</th>
                 </tr>
                 {%for a in active%}
                 <tr>
-                    <td>{{a.guest.name}}</td>
-                    <td>{{a.guest.mobile}}</td>
-                    <td>{{a.room}}</td>
-                    <td>{{a.stay_start_date}}</td>
-                    <td>{{a.stay_end_date}}</td>
-                    <td>{{a.occupancy_adult}}</td>
-                    <td>{{a.occupancy_child}}</td>
-                    <td>{{a.room.hotel}}</td>
+                    <td>{{a.bookingss.guest}}</td>
+                    <td>{{a.bookingss.guest.mobile}}</td>
+                    <td>{{a.bookingss.guest_name}}</td>
+                    <td>{{a.bookingss.guest_mobile}}</td>
+                    <td>{{a.bookingss.room}}</td>
+                    <td>{{a.bookingss.stay_start_date}}</td>
+                    <td>{{a.bookingss.stay_end_date}}</td>
+                    <td>{{a.bookingss.occupancy_adult}}</td>
+                    <td>{{a.bookingss.occupancy_child}}</td>
+                    <td>{{a.bookingss.room.hotel}}</td>
+                    <td>{{a.bookingss.status}}</td>
+<!--                    <td>{{a.bookingss.no_of_days}}</td>-->
+                    <td>{{a.bookingss.total}}</td>
+
+                    <td>{{a.date}}</td>
                     <td>{{a.status}}</td>
-                    <td>{{a.no_of_days}}</td>
-                    <td>{{a.total}}</td>
 
                 </tr>
+                 <td>
+
+                        <a href="{%url 'edit-active-booking' a.id%}" class="btn btn-outline-info">Edit</a>
+                         </td>
+
                 {%endfor%}
 
             </table>

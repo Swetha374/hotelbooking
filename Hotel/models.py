@@ -62,3 +62,19 @@ class Booking(models.Model):
     stay_end_date=models.DateField()
     no_of_days=models.IntegerField()
 
+    # def __str__(self):
+    #     return self.room
+
+
+class PerDayBooking(models.Model):
+    bookingss=models.ForeignKey(Booking,on_delete=models.CASCADE)
+    date=models.DateField()
+    OPTIONS = (
+        ("Accepted", "Accepted"),
+        ("Rejected", "Rejected"),
+        ("Cancelled", "Cancelled")
+    )
+    status = models.CharField(max_length=50, choices=OPTIONS, default="Accepted")
+
+    # def __str__(self):
+    #     return self.bookingss.room

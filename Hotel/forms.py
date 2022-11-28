@@ -93,8 +93,12 @@ class OwnerEditBookingForm(forms.ModelForm):
     class Meta:
         model=Booking
         fields = "__all__"
-        exclude=("room","guest","guest_name","total_bookingss","guest_mobile","no_of_days","total","occupancy_adult","occupancy_child","stay_start_date","stay_end_date")
+        exclude=("room","guest","guest_name","total_bookingss","guest_mobile","no_of_days","total","occupancy_adult","occupancy_child")
 
+        widgets = {
+            "stay_start_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "stay_end_date": forms.DateInput(attrs={"class": "form-control", "type": "date"})
+        }
 class GuestEditBookingForm(forms.ModelForm):
     class Meta:
         model=Booking
@@ -105,3 +109,9 @@ class GuestEditBookingForm(forms.ModelForm):
             "stay_start_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
             "stay_end_date": forms.DateInput(attrs={"class": "form-control", "type": "date"})
         }
+
+class EditAcceptedForm(forms.ModelForm):
+    class Meta:
+        model=PerDayBooking
+        fields="__all__"
+        exclude =("bookingss","date")

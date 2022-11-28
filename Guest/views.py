@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from Hotel.models import *
 from Hotel.decorators import *
 import datetime
-
+from datetime import timedelta
 
 @signin_required
 @guest_login
@@ -49,6 +49,7 @@ def booking_view(request, id):
                 return render(request, "guest-booking.html", {"form": form})
             for each_booking in Booking.objects.filter(room=room):
 
+
                 if str(each_booking.stay_start_date) < str(request.POST['stay_start_date']) and str(
                         each_booking.stay_end_date) < str(request.POST['stay_start_date']):
                     pass
@@ -69,7 +70,16 @@ def booking_view(request, id):
 
 
 
-            Booking.objects.create(**form.cleaned_data)
+            Bookings1=Booking.objects.create(**form.cleaned_data)
+            dt=[]
+            for i in range((Bookings1.stay_end_date-Bookings1.stay_start_date).days+1):
+                 bk=Bookings1.stay_start_date+timedelta(days=i)
+                 dt.append(bk)
+            for d in dt:
+                PerDayBooking.objects.create(bookingss=Bookings1,date=d)
+
+
+
             messages.success(request, "Booking added sucessfully")
             return redirect("guest-booking-list")
         else:
