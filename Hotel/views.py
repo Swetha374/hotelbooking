@@ -8,6 +8,7 @@ from Hotel.models import *
 from Hotel.decorators import *
 import datetime
 from datetime import timedelta
+from django.db.models import Sum,Count
 
 
 
@@ -84,17 +85,15 @@ def hotel_home(request):
 def list_hotel(request):
     hotel = request.user.hotel_set.all()
     booking_list = Booking.objects.filter(room__hotel__owner_name=request.user, status="Accepted")
+    bl=booking_list.aggregate(Sum("total"))
+    print(bl)
     booking_count = booking_list.count()
     pending = Booking.objects.exclude(status="Accepted").filter(room__hotel__owner_name=request.user).count()
-    sum = 0
     context = {}
-    for i in booking_list:
-        sum += i.total
-        print(sum)
     context["hotel"] = hotel
     context["count"] = booking_count
     context["pcount"] = pending
-    context["total"] =sum
+    context["total"] =bl['total__sum']
 
     return render(request, "home.html", context)
 
@@ -234,30 +233,10 @@ def booking_pending_list_view(request):
     return render(request, "booking-list.html", {"bookingslist": bookingslist})
 
 
-def booking_active_list_view(request,*args,**kwargs):
-    active_bookings = PerDayBooking.objects.filter(bookingss__room__hotel__owner_name=request.user,
-                                                   bookingss__status="Accepted")
-    return render(request, "active-booking.html",{"active":active_bookings})
 
-def edit_booking_list(request,*args,**kwargs):
-    # try:
-    if request.method == "GET":
-        id = kwargs.get("id")
-        bookings =PerDayBooking.objects.get(id=id)
-        form = forms.EditAcceptedForm(instance=bookings)
-        return render(request, "edit-active-bookings.html", {"form": form})
-    if request.method == "POST":
-        id = kwargs.get("id")
-        bookings = PerDayBooking.objects.get(id=id)
-        form = forms.EditAcceptedForm(request.POST, instance=bookings)
-        if form.is_valid():
-            form.save()
-            msg = "Booking status has been updated"
-            messages.success(request, msg)
-            return redirect("active-booking-list")
-        else:
-            messages.error(request, "Booking status update failed")
-            return render(request, "edit-active-booking.html", {"form": form})
+def booking_active_list_view(request,*args,**kwargs):
+    active_bookings = PerDayBooking.objects.filter(bookingss__room__hotel__owner_name=request.user,bookingss__status="Accepted")
+    return render(request, "active-booking.html",{"active":active_bookings})
 
 
 
@@ -280,16 +259,6 @@ def edit_booking_view(request, *args, **kwargs):
         bookings = Booking.objects.get(id=id)
         form = forms.OwnerEditBookingForm(request.POST,instance=bookings)
         if form.is_valid():
-            for buk in Booking.objects.all().filterby():
-                if str(buk.stay_start_date) < str(request.POST['stay_start_date']) and str(
-                        buk.stay_end_date) < str(request.POST['stay_start_date']):
-                    pass
-                elif str(buk.stay_start_date) > str(request.POST['stay_end_date']) and str(
-                        buk.stay_end_date) > str(request.POST['stay_end_date']):
-                    pass
-                else:
-                    messages.warning(request, "Sorry This date have existing bookings")
-                    return redirect("booking-list")
             form.save()
             msg = "Booking status has been updated"
             messages.success(request, msg)
@@ -305,5 +274,60 @@ def edit_booking_view(request, *args, **kwargs):
 
 def view_room_bookings(request, id):
     room = Room.objects.get(id=id)
-    bookings = Booking.objects.filter(room=room, )
+    bookings = Booking.objects.filter(room=room,)
     return render(request, "view-room-bookings.html", {"roombookings": bookings})
+
+def accept_booking(request,id):
+    book=Booking.objects.get(id=id)
+    pending= Booking.objects.exclude(status="Accepted").filter(room__hotel__owner_name=request.user)
+    accepted=Booking.objects.filter(room__hotel__owner_name=request.user,status="Accepted")
+
+    # vacated= PerDayBooking.objects.filter(status="vacated").filter(bookingss__room__hotel__owner_name=request.user)
+    # accepted2=PerDayBooking.objects.filter(bookingss__room__hotel__owner_name=request.user,bookingss__status="Accepted")
+    # for v,a in zip(vacated,accepted2):
+    #     if str(v.date) in str(a.date):
+    #         print(v.date)
+    #         pass
+    #     else:
+    #         messages.warning(request, "Sorry This Room is already occupied")
+    #         return redirect("hotel-home")
+
+    for i,j in zip(pending,accepted):
+        if str(i.stay_start_date) < str(j.stay_start_date) and str(i.stay_end_date) < str(j.stay_start_date) :
+            pass
+        elif str(i.stay_start_date) > str(j.stay_end_date) and str(i.stay_end_date) > str(j.stay_start_date):
+            pass
+        else:
+            messages.warning(request, "Sorry This Room is already occupied")
+            return redirect("hotel-home")
+    dt = []
+    for p in pending:
+
+        for i in range((p.stay_end_date - p.stay_start_date).days + 1):
+            bk = p.stay_start_date + timedelta(days=i)
+            dt.append(bk)
+    dt1=set(dt)
+    dt2=list(dt1)
+    dt2.sort()
+    for d in dt2:
+        PerDayBooking.objects.create(bookingss=p, date=d)
+
+    book.status="Accepted"
+    book.save()
+    messages.success(request,"Booking accepted")
+    return redirect("booking-list")
+
+def reject_booking(request,id):
+    book=Booking.objects.get(id=id)
+    book.status="Rejected"
+    book.save()
+    messages.success(request,"Booking rejected")
+    return redirect("booking-list")
+
+def vacateperdaybooking(request,id):
+    book = PerDayBooking.objects.get(id=id)
+    book.status = "vacated"
+    book.save()
+    messages.success(request, "Room vacated")
+    return redirect("active-booking-list")
+

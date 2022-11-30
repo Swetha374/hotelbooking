@@ -13,6 +13,19 @@
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 <body>
+ <div class="row">
+        <div class="col-4">
+        </div>
+        <div class="col-4">
+            {%if messages%}
+                {%for m in messages%}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  <strong>{{m}}</strong>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {%endfor%}
+            {%endif%}
+        </div>
 <div class="container">
     <div class="row">
         <div class="col-2">
@@ -20,22 +33,23 @@
         <div class="col-8">
             <table class="table">
                 <tr>
-                    {%if active%}
+                {%if active%}
                     <th>Guest Name</th>
                     <th>Mobile</th>
                     <th>Guest name(offline)</th>
                     <th>Guest mob(offline)</th>
                     <th>Room</th>
-                    <th>stay_start_date</th>
-                    <th>stay_end_date</th>
+                    <th>Status</th>
+<!--                    <th>stay_start_date</th>-->
+<!--                    <th>stay_end_date</th>-->
                     <th>Adult</th>
                     <th>Child</th>
                     <th>Hotel</th>
-                   <th>Status</th>
 <!--                    <th>No of days</th>-->
                     <th>Total price</th>
                     <th>Date</th>
                     <th>Status</th>
+
                 </tr>
                 {%for a in active%}
                 <tr>
@@ -44,24 +58,24 @@
                     <td>{{a.bookingss.guest_name}}</td>
                     <td>{{a.bookingss.guest_mobile}}</td>
                     <td>{{a.bookingss.room}}</td>
-                    <td>{{a.bookingss.stay_start_date}}</td>
-                    <td>{{a.bookingss.stay_end_date}}</td>
+                    <td>{{a.bookingss.status}}</td>
+<!--                    <td>{{a.bookingss.stay_start_date}}</td>-->
+<!--                    <td>{{a.bookingss.stay_end_date}}</td>-->
                     <td>{{a.bookingss.occupancy_adult}}</td>
                     <td>{{a.bookingss.occupancy_child}}</td>
                     <td>{{a.bookingss.room.hotel}}</td>
-                    <td>{{a.bookingss.status}}</td>
 <!--                    <td>{{a.bookingss.no_of_days}}</td>-->
                     <td>{{a.bookingss.total}}</td>
 
                     <td>{{a.date}}</td>
                     <td>{{a.status}}</td>
 
+
                 </tr>
-                 <td>
+  <td>
 
-                        <a href="{%url 'edit-active-booking' a.id%}" class="btn btn-outline-info">Edit</a>
+                        <a href="{%url 'vacate' a.id%}" class="btn btn-outline-success">Vacate</a>
                          </td>
-
                 {%endfor%}
 
             </table>
@@ -74,5 +88,13 @@
         </div>
     </div>
 </div>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script src="{%static 'owner/js/scripts.js'%}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="assets/demo/chart-area-demo.js"></script>
+<script src="assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script src="{%static 'ownerjs/datatables-simple-demo.js'%}"></script>
 </body>
 </html>

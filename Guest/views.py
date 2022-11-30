@@ -47,18 +47,18 @@ def booking_view(request, id):
             else:
                 messages.error(request,"invalid date")
                 return render(request, "guest-booking.html", {"form": form})
-            for each_booking in Booking.objects.filter(room=room):
-
-
-                if str(each_booking.stay_start_date) < str(request.POST['stay_start_date']) and str(
-                        each_booking.stay_end_date) < str(request.POST['stay_start_date']):
+            for each_booking in PerDayBooking.objects.filter(bookingss__room=room).exclude(bookingss__status="Pending").exclude(bookingss__status="Rejected"):
+                if str(each_booking.bookingss.stay_start_date) < str(request.POST['stay_start_date']) and str(
+                        each_booking.bookingss.stay_end_date) < str(request.POST['stay_start_date']):
                     pass
-                elif str(each_booking.stay_start_date) > str(request.POST['stay_end_date']) and str(
-                        each_booking.stay_end_date) > str(request.POST['stay_end_date']):
+                elif str(each_booking.bookingss.stay_start_date) > str(request.POST['stay_end_date']) and str(
+                        each_booking.bookingss.stay_end_date) > str(request.POST['stay_end_date']):
                     pass
                 else:
                     messages.warning(request, "Sorry This Room is unavailable for Booking")
                     return redirect("guest-home")
+
+
 
             form.cleaned_data["guest"] = request.user
             form.cleaned_data["room"] = room
@@ -155,7 +155,8 @@ def delete_booking(request, *args, **kwargs):
     return redirect("guest-booking-list")
 
 def your_bookings_room(request,id):
-        room = Room.objects.get(id=id)
-        bookings = Booking.objects.filter(room=room)
-        return render(request, "view-booking.html", {"viewbookings": bookings})
+    room = Room.objects.get(id=id)
+    bookings = request.user.booking_set.filter(room=room).all()
+    return render(request, "view-booking.html", {"viewbookings": bookings})
+
 

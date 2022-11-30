@@ -56,8 +56,11 @@
                 </tr>
                 <td>
 
-                        <a href="{%url 'edit-booking-hotel' bk.id%}" class="btn btn-outline-info">Edit</a>
+                        <a href="{%url 'accept' bk.id%}" class="btn btn-outline-success">Accept</a>
                          </td>
+                <td>
+                    <a href="{%url 'reject' bk.id%}" class="btn btn-outline-danger">Reject</a>
+                </td>
                         <td>
                          <a href="{%url 'delete-booking-hotel' bk.id%}" class="btn btn-outline-danger">Delete</a>
                     </td>

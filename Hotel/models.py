@@ -48,7 +48,6 @@ class Booking(models.Model):
         ("Pending","Pending"),
         ("Accepted","Accepted"),
         ("Rejected","Rejected"),
-        ("Cancelled","Cancelled")
     )
     status=models.CharField(max_length=50,choices=OPTIONS,default="Pending")
     occupancy_adult = models.PositiveIntegerField()
@@ -57,7 +56,7 @@ class Booking(models.Model):
     guest_name=models.CharField(max_length=50,default="-")
     guest_mobile=models.CharField(max_length=12, null=True,blank=True)
     room=models.ForeignKey(Room,on_delete=models.CASCADE)
-    total=models.FloatField()
+    total=models.FloatField(default=0)
     stay_start_date=models.DateField()
     stay_end_date=models.DateField()
     no_of_days=models.IntegerField()
@@ -70,11 +69,11 @@ class PerDayBooking(models.Model):
     bookingss=models.ForeignKey(Booking,on_delete=models.CASCADE)
     date=models.DateField()
     OPTIONS = (
-        ("Accepted", "Accepted"),
-        ("Rejected", "Rejected"),
-        ("Cancelled", "Cancelled")
+        ("Pending", "Pending"),
+        ("Active", "Active"),
+        ("vacated", "vacated"),
     )
-    status = models.CharField(max_length=50, choices=OPTIONS, default="Accepted")
+    status=models.CharField(max_length=50,choices=OPTIONS,default="Active")
 
     # def __str__(self):
     #     return self.bookingss.room
