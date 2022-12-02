@@ -92,6 +92,19 @@
 
                     </tr>
                     {%endif%}
+
+                        {%if booki.status == "Accepted"%}
+                    <td>
+                        <a href="{%url 'perday-list' booki.id%}" class="btn btn-outline-info">Perday list</a>
+                         </td>
+                        <td>
+                    <a href="{%url 'delete-booking' booki.id%}" class="btn btn-outline-danger">Delete</a>
+                    </td>
+
+
+
+                    </tr>
+                    {%endif%}
                     {%endfor%}
 
                 </table>

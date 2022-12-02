@@ -71,13 +71,6 @@ def booking_view(request, id):
 
 
             Bookings1=Booking.objects.create(**form.cleaned_data)
-            dt=[]
-            for i in range((Bookings1.stay_end_date-Bookings1.stay_start_date).days+1):
-                 bk=Bookings1.stay_start_date+timedelta(days=i)
-                 dt.append(bk)
-            for d in dt:
-                PerDayBooking.objects.create(bookingss=Bookings1,date=d)
-
 
 
             messages.success(request, "Booking added sucessfully")
@@ -158,5 +151,17 @@ def your_bookings_room(request,id):
     room = Room.objects.get(id=id)
     bookings = request.user.booking_set.filter(room=room).all()
     return render(request, "view-booking.html", {"viewbookings": bookings})
+
+def perdaybooking_list(request,id):
+    b = Booking.objects.get(id=id)
+    perday = PerDayBooking.objects.filter(bookingss=b,bookingss__status="Accepted")
+    return render(request, "perday-list.html", {"perday":perday})
+
+def vacate(request,id):
+    book = PerDayBooking.objects.get(id=id)
+    book.status = "vacated"
+    book.delete()
+    messages.success(request, "Room vacated")
+    return redirect("guest-home")
 
 

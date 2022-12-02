@@ -235,14 +235,13 @@ def booking_pending_list_view(request):
 
 
 def booking_active_list_view(request,*args,**kwargs):
-    active_bookings = PerDayBooking.objects.filter(bookingss__room__hotel__owner_name=request.user,bookingss__status="Accepted")
+    active_bookings = PerDayBooking.objects.filter(bookingss__room__hotel__owner_name=request.user)
     return render(request, "active-booking.html",{"active":active_bookings})
 
 
 
 def delete_booking_hotel(request, *args, **kwargs):
-    id = kwargs.get("id")
-    bookingdel = Booking.objects.get(id=id).delete()
+    bookingdel = Booking.objects.filter(status="Pending").delete()
     return redirect("booking-list")
 
 
@@ -282,16 +281,6 @@ def accept_booking(request,id):
     pending= Booking.objects.exclude(status="Accepted").filter(room__hotel__owner_name=request.user)
     accepted=Booking.objects.filter(room__hotel__owner_name=request.user,status="Accepted")
 
-    # vacated= PerDayBooking.objects.filter(status="vacated").filter(bookingss__room__hotel__owner_name=request.user)
-    # accepted2=PerDayBooking.objects.filter(bookingss__room__hotel__owner_name=request.user,bookingss__status="Accepted")
-    # for v,a in zip(vacated,accepted2):
-    #     if str(v.date) in str(a.date):
-    #         print(v.date)
-    #         pass
-    #     else:
-    #         messages.warning(request, "Sorry This Room is already occupied")
-    #         return redirect("hotel-home")
-
     for i,j in zip(pending,accepted):
         if str(i.stay_start_date) < str(j.stay_start_date) and str(i.stay_end_date) < str(j.stay_start_date) :
             pass
@@ -300,19 +289,16 @@ def accept_booking(request,id):
         else:
             messages.warning(request, "Sorry This Room is already occupied")
             return redirect("hotel-home")
+
+    book.status="Accepted"
     dt = []
     for p in pending:
 
         for i in range((p.stay_end_date - p.stay_start_date).days + 1):
             bk = p.stay_start_date + timedelta(days=i)
             dt.append(bk)
-    dt1=set(dt)
-    dt2=list(dt1)
-    dt2.sort()
-    for d in dt2:
+    for d in dt:
         PerDayBooking.objects.create(bookingss=p, date=d)
-
-    book.status="Accepted"
     book.save()
     messages.success(request,"Booking accepted")
     return redirect("booking-list")
