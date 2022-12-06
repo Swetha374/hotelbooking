@@ -24,9 +24,9 @@ class Hotel(models.Model):
 class Room(models.Model):
     room_name=models.CharField(max_length=20)
     OPTIONS=(
-        ("Booked","Booked"),
-        ("Active","Active"),
-        ("inactive","inactive")
+        ("booked","Booked"),
+        ("active","Active"),
+        ("inactive","Inactive")
 
     )
     availability=models.CharField(max_length=50,choices=OPTIONS,default="Active")
@@ -45,9 +45,9 @@ class Room(models.Model):
 
 class Booking(models.Model):
     OPTIONS=(
-        ("Pending","Pending"),
-        ("Accepted","Accepted"),
-        ("Rejected","Rejected"),
+        ("pending","Pending"),
+        ("accepted","Accepted"),
+        ("rejected","Rejected"),
     )
     status=models.CharField(max_length=50,choices=OPTIONS,default="Pending")
     occupancy_adult = models.PositiveIntegerField()
@@ -69,11 +69,11 @@ class PerDayBooking(models.Model):
     bookingss=models.ForeignKey(Booking,on_delete=models.CASCADE)
     date=models.DateField()
     OPTIONS = (
-        ("Pending", "Pending"),
-        ("Active", "Active"),
-        ("vacated", "vacated"),
+        ("pending", "Pending"),
+        ("active", "Active"),
+        ("completed", "Completed"),
     )
-    status=models.CharField(max_length=50,choices=OPTIONS,default="Active")
+    status=models.CharField(max_length=50,choices=OPTIONS,default="Pending")
 
     # def __str__(self):
     #     return self.bookingss.room

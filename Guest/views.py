@@ -23,7 +23,8 @@ def view_room(request, id):
     rooms = Room.objects.filter(hotel=hotel_name, availability="Active")
     return render(request, "view-room.html", {"rooms": rooms})
 
-
+@signin_required
+@guest_login
 def booking_view(request, id):
     room = Room.objects.get(id=id)
     form = forms.BookingForm()
@@ -47,26 +48,18 @@ def booking_view(request, id):
             else:
                 messages.error(request,"invalid date")
                 return render(request, "guest-booking.html", {"form": form})
-            for each_booking in PerDayBooking.objects.filter(bookingss__room=room).exclude(bookingss__status="Pending").exclude(bookingss__status="Rejected"):
-                if str(each_booking.bookingss.stay_start_date) < str(request.POST['stay_start_date']) and str(
-                        each_booking.bookingss.stay_end_date) < str(request.POST['stay_start_date']):
-                    pass
-                elif str(each_booking.bookingss.stay_start_date) > str(request.POST['stay_end_date']) and str(
-                        each_booking.bookingss.stay_end_date) > str(request.POST['stay_end_date']):
-                    pass
-                else:
-                    messages.warning(request, "Sorry This Room is unavailable for Booking")
-                    return redirect("guest-home")
+            start_date=request.POST['stay_start_date']
+            end_date=request.POST['stay_start_date']
+            if PerDayBooking.objects.filter(bookingss__room=room,status__in=('pending','active'),date__range=[start_date,end_date]).exists():
 
+                messages.warning(request, "Sorry This Room is unavailable for Booking")
+                return redirect("guest-home")
+            else:
+                pass
 
 
             form.cleaned_data["guest"] = request.user
             form.cleaned_data["room"] = room
-            # form.cleaned_data["no_of_days"] = (
-            #         form.cleaned_data["stay_end_date"] - form.cleaned_data["stay_start_date"]).days
-            # form.cleaned_data["total"] = (form.cleaned_data["occupancy_adult"] * room.price_of_adult) * form.cleaned_data['no_of_days'] + (form.cleaned_data[
-            #                      "occupancy_child"] * room.price_of_child) * form.cleaned_data['no_of_days']
-
 
 
 
@@ -81,6 +74,8 @@ def booking_view(request, id):
     return render(request, "guest-booking.html", {"form": form})
 
 
+@signin_required
+@guest_login
 def guest_booking_list(request):
     try:
         bookings = request.user.booking_set.all()
@@ -89,13 +84,16 @@ def guest_booking_list(request):
     except:
         return render(request, "list-booking.html", {"bookings": bookings})
 
-
+@signin_required
+@guest_login
 @signin_required
 def logout_view(request):
     logout(request)
     return redirect("signin")
 
 
+@signin_required
+@guest_login
 def guest_edit_booking_view(request, *args, **kwargs):
 
         if request.method == "GET":
@@ -141,27 +139,34 @@ def guest_edit_booking_view(request, *args, **kwargs):
                 return render(request, "guest-edit-booking.html", {"form": form})
 
 
-
+@signin_required
+@guest_login
 def delete_booking(request, *args, **kwargs):
     id = kwargs.get("id")
     Booking.objects.get(id=id).delete()
     return redirect("guest-booking-list")
 
+@signin_required
+@guest_login
 def your_bookings_room(request,id):
     room = Room.objects.get(id=id)
     bookings = request.user.booking_set.filter(room=room).all()
     return render(request, "view-booking.html", {"viewbookings": bookings})
 
-def perdaybooking_list(request,id):
-    b = Booking.objects.get(id=id)
-    perday = PerDayBooking.objects.filter(bookingss=b,bookingss__status="Accepted")
-    return render(request, "perday-list.html", {"perday":perday})
-
-def vacate(request,id):
-    book = PerDayBooking.objects.get(id=id)
-    book.status = "vacated"
-    book.delete()
-    messages.success(request, "Room vacated")
-    return redirect("guest-home")
+# @signin_required
+# @guest_login
+# def perdaybooking_list(request,id):
+#     b = Booking.objects.get(id=id)
+#     perday = PerDayBooking.objects.filter(bookingss=b,bookingss__status="Accepted")
+#     return render(request, "perday-list.html", {"perday":perday})
+#
+# @signin_required
+# @guest_login
+# def vacate(request,id):
+#     book = PerDayBooking.objects.get(id=id)
+#     book.status = "vacated"
+#     book.delete()
+#     messages.success(request, "Room vacated")
+#     return redirect("guest-home")
 
 

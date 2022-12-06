@@ -72,10 +72,22 @@
 
 
                 </tr>
-  <td>
 
-                        <a href="{%url 'vacate' a.id%}" class="btn btn-outline-success">Vacate</a>
+                <td>
+                    <a href="{%url 'active' a.id%}" class="btn btn-outline-success">Active</a>
+                </td>
+ <td>
+     {%if a.status == "Pending"%}
+                    <a href="{%url 'del' a.id%}" class="btn btn-outline-success">Delete</a>
+                </td>
+                  {%endif%}
+  <td>
+      {%if a.status == "Active"%}
+                        <a href="{%url 'complete' a.id%}" class="btn btn-outline-success">Complete</a>
+
                          </td>
+
+                {%endif%}
                 {%endfor%}
 
             </table>

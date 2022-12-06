@@ -8,8 +8,7 @@ from Hotel.models import *
 from Hotel.decorators import *
 import datetime
 from datetime import timedelta
-from django.db.models import Sum,Count
-
+from django.db.models import Sum, Count
 
 
 def login_view(request):
@@ -85,7 +84,7 @@ def hotel_home(request):
 def list_hotel(request):
     hotel = request.user.hotel_set.all()
     booking_list = Booking.objects.filter(room__hotel__owner_name=request.user, status="Accepted")
-    bl=booking_list.aggregate(Sum("total"))
+    bl = booking_list.aggregate(Sum("total"))
     print(bl)
     booking_count = booking_list.count()
     pending = Booking.objects.exclude(status="Accepted").filter(room__hotel__owner_name=request.user).count()
@@ -93,7 +92,7 @@ def list_hotel(request):
     context["hotel"] = hotel
     context["count"] = booking_count
     context["pcount"] = pending
-    context["total"] =bl['total__sum']
+    context["total"] = bl['total__sum']
 
     return render(request, "home.html", context)
 
@@ -108,6 +107,7 @@ def hotel_detail(request, *args, **kwargs):
 
 
 @signin_required
+@hotel_login
 def delete_hotel(request, *args, **kwargs):
     if not Booking.objects.filter(status="Accepted"):
         id = kwargs.get("id")
@@ -118,6 +118,7 @@ def delete_hotel(request, *args, **kwargs):
         return redirect("hotel-home")
 
 
+@signin_required
 @hotel_login
 def add_room(request, id):
     hotel = Hotel.objects.get(id=id)
@@ -135,6 +136,7 @@ def add_room(request, id):
     return render(request, "add-room.html", {"form": form})
 
 
+@signin_required
 @hotel_login
 def list_room(request, id):
     try:
@@ -181,6 +183,8 @@ def delete_room(request, *args, **kwargs):
     return redirect("hotel-home")
 
 
+@signin_required
+@hotel_login
 def owner_booking_view(request, id):
     roomm = Room.objects.get(id=id)
     status = Booking.objects.exclude(status="Accepted")
@@ -206,16 +210,15 @@ def owner_booking_view(request, id):
             else:
                 messages.error(request, "invalid date")
                 return render(request, "owner-booking.html", {"form": form})
-            for each_book in Booking.objects.filter(room=roomm):
-                if str(each_book.stay_start_date) < str(request.POST['stay_start_date']) and str(
-                        each_book.stay_end_date) < str(request.POST['stay_start_date']):
-                    pass
-                elif str(each_book.stay_start_date) > str(request.POST['stay_end_date']) and str(
-                        each_book.stay_end_date) > str(request.POST['stay_end_date']):
-                    pass
-                else:
-                    messages.warning(request, "Sorry This Room is unavailable for Booking")
-                    return redirect("hotel-home")
+            start_date = request.POST['stay_start_date']
+            end_date = request.POST['stay_start_date']
+            if PerDayBooking.objects.filter(bookingss__room=roomm, status__in=('pending', 'active'),
+                                            date__range=[start_date, end_date]).exists():
+
+                messages.warning(request, "Sorry This Room is unavailable for Booking")
+                return redirect("guest-home")
+            else:
+                pass
 
             form.cleaned_data["guest"] = request.user
             form.cleaned_data["room"] = roomm
@@ -228,25 +231,32 @@ def owner_booking_view(request, id):
     return render(request, "owner-booking.html", {"form": form})
 
 
+@signin_required
+@hotel_login
 def booking_pending_list_view(request):
     bookingslist = Booking.objects.exclude(status="Accepted").filter(room__hotel__owner_name=request.user)
     return render(request, "booking-list.html", {"bookingslist": bookingslist})
 
 
+@signin_required
+@hotel_login
+def booking_active_list_view(request, *args, **kwargs):
+    active_bookings = PerDayBooking.objects.filter(bookingss__room__hotel__owner_name=request.user,
+                                                   bookingss__status="Accepted")
+    return render(request, "active-booking.html", {"active": active_bookings})
 
-def booking_active_list_view(request,*args,**kwargs):
-    active_bookings = PerDayBooking.objects.filter(bookingss__room__hotel__owner_name=request.user)
-    return render(request, "active-booking.html",{"active":active_bookings})
 
-
-
-def delete_booking_hotel(request, *args, **kwargs):
-    bookingdel = Booking.objects.filter(status="Pending").delete()
+@signin_required
+@hotel_login
+def delete_booking_hotel(request, id):
+    b = Booking.objects.get(id=id)
+    bookingdel = Booking.objects.filter(id=b.id, status="Pending").delete()
     return redirect("booking-list")
 
 
+@signin_required
+@hotel_login
 def edit_booking_view(request, *args, **kwargs):
-
     # try:
     if request.method == "GET":
         id = kwargs.get("id")
@@ -256,64 +266,117 @@ def edit_booking_view(request, *args, **kwargs):
     if request.method == "POST":
         id = kwargs.get("id")
         bookings = Booking.objects.get(id=id)
-        form = forms.OwnerEditBookingForm(request.POST,instance=bookings)
+        form = forms.OwnerEditBookingForm(request.POST, instance=bookings)
         if form.is_valid():
             form.save()
             msg = "Booking status has been updated"
             messages.success(request, msg)
             return redirect("booking-list")
         else:
-            messages.error(request,"Booking status update failed")
-            return render(request,"edit-booking-hotel.html", {"form":form})
+            messages.error(request, "Booking status update failed")
+            return render(request, "edit-booking-hotel.html", {"form": form})
 
 
 # except:
 #     return render(request, "booking-list.html")
 
-
+@signin_required
+@hotel_login
 def view_room_bookings(request, id):
     room = Room.objects.get(id=id)
-    bookings = Booking.objects.filter(room=room,)
+    bookings = Booking.objects.filter(room=room, )
     return render(request, "view-room-bookings.html", {"roombookings": bookings})
 
-def accept_booking(request,id):
-    book=Booking.objects.get(id=id)
-    pending= Booking.objects.exclude(status="Accepted").filter(room__hotel__owner_name=request.user)
-    accepted=Booking.objects.filter(room__hotel__owner_name=request.user,status="Accepted")
 
-    for i,j in zip(pending,accepted):
-        if str(i.stay_start_date) < str(j.stay_start_date) and str(i.stay_end_date) < str(j.stay_start_date) :
-            pass
-        elif str(i.stay_start_date) > str(j.stay_end_date) and str(i.stay_end_date) > str(j.stay_start_date):
-            pass
-        else:
-            messages.warning(request, "Sorry This Room is already occupied")
-            return redirect("hotel-home")
-
-    book.status="Accepted"
+@signin_required
+@hotel_login
+def accept_booking(request, id):
+    book = Booking.objects.get(id=id)
+    pending = Booking.objects.exclude(status="Accepted").filter(room__hotel__owner_name=request.user)
+    accepted = Booking.objects.filter(room__hotel__owner_name=request.user, status="Accepted")
+    start_date = book.stay_start_date
+    end_date = book.stay_end_date
+    if PerDayBooking.objects.filter(bookingss__room=book.room, status__in=("Active", "Pending"),
+                                    date__range=[start_date, end_date]).exists():
+        pv=PerDayBooking.objects.filter(bookingss__room=book.room, status__in=("Active", "Pending"),
+                                    date__range=[start_date, end_date])
+        print(pv)
+        messages.warning(request, "Sorry This Room is already occupied")
+        return redirect("hotel-home")
+    book.status = "Accepted"
     dt = []
-    for p in pending:
 
-        for i in range((p.stay_end_date - p.stay_start_date).days + 1):
-            bk = p.stay_start_date + timedelta(days=i)
-            dt.append(bk)
-    for d in dt:
-        PerDayBooking.objects.create(bookingss=p, date=d)
+    for i in range((end_date-start_date).days+1):
+        s=start_date+timedelta(days=i)
+        PerDayBooking.objects.create(bookingss=book,date=s)
+
+
     book.save()
-    messages.success(request,"Booking accepted")
+    messages.success(request, "Booking accepted")
     return redirect("booking-list")
 
-def reject_booking(request,id):
-    book=Booking.objects.get(id=id)
-    book.status="Rejected"
+
+
+
+@signin_required
+@hotel_login
+def reject_booking(request, id):
+    book = Booking.objects.get(id=id)
+    book.status = "Rejected"
     book.save()
-    messages.success(request,"Booking rejected")
+    messages.success(request, "Booking rejected")
     return redirect("booking-list")
 
-def vacateperdaybooking(request,id):
+
+@signin_required
+@hotel_login
+def completeperdaybooking(request, id):
     book = PerDayBooking.objects.get(id=id)
-    book.status = "vacated"
+    book.status = "completed"
     book.save()
-    messages.success(request, "Room vacated")
+    messages.success(request, "stay completed")
+    return redirect("active-booking-list")
+
+
+@signin_required
+@hotel_login
+def Activeperdaybooking(request, id):
+    book = PerDayBooking.objects.get(id=id)
+    dt=book.date-timedelta(days=1)
+    if Booking.objects.filter(stay_start_date=book.date):
+        pass
+    elif PerDayBooking.objects.filter(status__in=("Active",),date=dt).exists():
+            pass
+
+    else:
+        messages.success(request, "Booking activation failed")
+        return redirect("active-booking-list")
+
+    book.status = "Active"
+    book.save()
+    messages.success(request, "Booking activated")
+    return redirect("active-booking-list")
+
+@signin_required
+@hotel_login
+def delete_perday_booking(request, id):
+    b = PerDayBooking.objects.get(id=id)
+    start_date=Booking.objects.filter(stay_start_date=b.date)
+    end_date=Booking.objects.filter(stay_end_date=b.date)
+    previous_date = b.date - timedelta(days=1)
+    next_date= b.date + timedelta(days=1)
+    if start_date:
+        for i in start_date:
+          i.stay_start_date=next_date
+          i.save()
+    if end_date:
+        for i in end_date:
+          i.stay_end_date=previous_date
+          i.save()
+    else:
+        messages.success(request, "Booking deletion failed")
+        return redirect("active-booking-list")
+    b.delete()
+    messages.success(request, "Booking deleted")
     return redirect("active-booking-list")
 
