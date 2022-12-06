@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from Hotel.models import *
 from Hotel.decorators import *
 import datetime
+from django.core.mail import send_mail
 from datetime import timedelta
 from django.db.models import Sum, Count
 
@@ -312,6 +313,13 @@ def accept_booking(request, id):
 
 
     book.save()
+    # send_mail(
+    #     "Hotel booked",
+    #     "your room has been booked",
+    #     "swethasasi374@gmail.com",
+    #     [""]
+
+    # )
     messages.success(request, "Booking accepted")
     return redirect("booking-list")
 
@@ -369,10 +377,10 @@ def delete_perday_booking(request, id):
         for i in start_date:
           i.stay_start_date=next_date
           i.save()
-    if end_date:
-        for i in end_date:
-          i.stay_end_date=previous_date
-          i.save()
+    elif end_date:
+        for j in end_date:
+          j.stay_end_date=previous_date
+          j.save()
     else:
         messages.success(request, "Booking deletion failed")
         return redirect("active-booking-list")
