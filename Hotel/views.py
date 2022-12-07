@@ -323,8 +323,7 @@ def accept_booking(request, id):
     imagespath = book.room.hotel.image
     email_from = settings.EMAIL_HOST_USER
     email = EmailMessage(subject, message, email_from, to)
-    email.attach_file(os.path.join(settings.BASE_DIR,'media',str(imagespath)))
-    # email.attach_file('media/image' + str(imagespath))
+    email.attach_file(os.path.join(settings.BASE_DIR, 'media', str(imagespath)))
     email.send()
     messages.success(request, "Booking accepted")
     return redirect("booking-list")
