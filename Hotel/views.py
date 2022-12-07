@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-
+from django.conf import settings
 # Create your views here.
 from Hotel import forms
 from django.contrib import messages
@@ -7,9 +7,11 @@ from django.contrib.auth import authenticate, login, logout
 from Hotel.models import *
 from Hotel.decorators import *
 import datetime
+from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from datetime import timedelta
 from django.db.models import Sum, Count
+import os
 
 
 def login_view(request):
@@ -311,15 +313,19 @@ def accept_booking(request, id):
         s=start_date+timedelta(days=i)
         PerDayBooking.objects.create(bookingss=book,date=s)
 
-
+    print(book.guest.email)
+    print(type(book.room.hotel.image))
+    print(os.getcwd())
     book.save()
-    # send_mail(
-    #     "Hotel booked",
-    #     "your room has been booked",
-    #     "swethasasi374@gmail.com",
-    #     [""]
-
-    # )
+    to = [book.guest.email]
+    subject = "Booking Accepted"
+    message = "Your booking has been accepted successfully"
+    imagespath = book.room.hotel.image
+    email_from = settings.EMAIL_HOST_USER
+    email = EmailMessage(subject, message, email_from, to)
+    email.attach_file(os.path.join(settings.BASE_DIR,'media',str(imagespath)))
+    # email.attach_file('media/image' + str(imagespath))
+    email.send()
     messages.success(request, "Booking accepted")
     return redirect("booking-list")
 
