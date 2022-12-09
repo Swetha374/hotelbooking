@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,HttpResponse
 from django.conf import settings
 # Create your views here.
 from Hotel import forms
+from Hotel.task import *
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from Hotel.models import *
@@ -317,14 +318,7 @@ def accept_booking(request, id):
     print(type(book.room.hotel.image))
     print(os.getcwd())
     book.save()
-    to = [book.guest.email]
-    subject = "Booking Accepted"
-    message = "Your booking has been accepted successfully"
-    imagespath = book.room.hotel.image
-    email_from = settings.EMAIL_HOST_USER
-    email = EmailMessage(subject, message, email_from, to)
-    email.attach_file(os.path.join(settings.BASE_DIR, 'media', str(imagespath)))
-    email.send()
+    test_func.delay(id)
     messages.success(request, "Booking accepted")
     return redirect("booking-list")
 
