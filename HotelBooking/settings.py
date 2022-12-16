@@ -39,11 +39,35 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Hotel',
     'rest_framework',
+    "rest_framework_simplejwt",
     'Admin',
     'Guest',
+    'django_celery_beat',
+    'django_db_logger',
+    'guestapi',
+    'hotelapi',
+    'drf_yasg',
 
 ]
 
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        "Auth Token eg [Bearer (JWT) ]": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
 
 
 MIDDLEWARE = [
@@ -92,8 +116,13 @@ WSGI_APPLICATION = 'HotelBooking.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+         'NAME':'mydb',
+         'USER':'postgres',
+         'PASSWORD':'12345',
+         'HOST':'localhost',
+         'PORT':'5432'
+
     }
 }
 
@@ -122,7 +151,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -156,3 +185,88 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER ='json'
 CELERY_TIMEZONE = "Asia/Kolkata"
 CELERY_QUEUES=None
+
+
+import os
+
+# LOGGING = {
+# 'version': 1,
+# 'disable_existing_loggers': False,
+# 'handlers': {
+# 'file': {
+# 'level': 'DEBUG',
+# 'class': 'logging.FileHandler',
+# 'filename': 'HotelBooking/debug.log',
+# },
+# },
+# 'loggers': {
+# 'django': {
+# 'handlers': ['file'],
+# 'level': 'DEBUG',
+# 'propagate': False,
+# },
+# },
+# }
+
+
+FORMATTERS = (
+    {
+        "verbose": {
+            "format": "{levelname} {asctime:s} {threadName} {thread:d} {module} {filename} {lineno:d} {name} {funcName} {process:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {asctime:s} {module} {filename} {lineno:d} {funcName} {message}",
+            "style": "{",
+        },
+    },
+)
+
+
+HANDLERS = {
+    "console_handler": {
+        "class": "logging.StreamHandler",
+        "formatter": "simple",
+    },
+    "my_handler": {
+        "class": "logging.handlers.RotatingFileHandler",
+        "filename": 'HotelBooking/debug.log',
+        "mode": "a",
+        "encoding": "utf-8",
+        "formatter": "simple",
+        "backupCount": 5,
+        "maxBytes": 1024 * 1024 * 5,  # 5 MB
+    },
+    "my_handler_detailed": {
+        "class": "logging.handlers.RotatingFileHandler",
+        "filename": 'HotelBooking/debug_detailed.log',
+        "mode": "a",
+        "formatter": "verbose",
+        "backupCount": 5,
+        "maxBytes": 1024 * 1024 * 5,  # 5 MB
+    },
+}
+
+LOGGERS = (
+    {
+        "django": {
+            "handlers": ["console_handler", "my_handler_detailed"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["my_handler"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+    },
+)
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": FORMATTERS[0],
+    "handlers": HANDLERS,
+    "loggers": LOGGERS[0],
+}

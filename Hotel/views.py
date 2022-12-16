@@ -14,10 +14,13 @@ from datetime import timedelta
 from django.db.models import Sum, Count
 import os
 
+import logging
+logger = logging.getLogger(__name__)
 
 def login_view(request):
     if request.method == "GET":
         form = forms.SignInForm()
+        logger.warning('Log whatever you want')
         return render(request, "signin.html", {"form": form})
 
     if request.method == "POST":
@@ -320,9 +323,7 @@ def accept_booking(request, id):
     book.save()
     test_func.delay(id)
     messages.success(request, "Booking accepted")
-    return redirect("booking-list")
-
-
+    return redirect("hotel-home")
 
 
 @signin_required

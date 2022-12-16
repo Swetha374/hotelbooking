@@ -2,6 +2,8 @@ from __future__ import absolute_import,unicode_literals
 import os
 from celery import Celery
 from django.conf import settings
+from celery.schedules import crontab
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE","HotelBooking.settings")
 app=Celery("HotelBooking")
@@ -9,13 +11,20 @@ app.conf.enable_utc=False
 app.conf.update(timezone = 'Asia/Kolkata')
 app.config_from_object(settings,namespace="CELERY")
 
+app.conf.beat_schedule = {
+    'add-every-day-morning':{
+        'task': 'Hotel.task.per_task'
+        ,
+        # 'schedule': crontab(minute=00,hour=9),
+        'schedule': crontab(minute="*/1")
+    }
+}
+
 #CELERY BEAT SETTING
 
 app.autodiscover_tasks()
 
-# @app.on_after_configure.connect()
-# def trigger_autodiscovery(sender, **kwargs):
-#     app.loader.import_default_modules()
+
 
 @app.task(bind=True)
 def debug_task(self):

@@ -20,7 +20,7 @@ def guest_home(request):
 @guest_login
 def view_room(request, id):
     hotel_name = Hotel.objects.get(id=id)
-    rooms = Room.objects.filter(hotel=hotel_name, availability="Active")
+    rooms = Room.objects.filter(hotel=hotel_name, availability="active")
     return render(request, "view-room.html", {"rooms": rooms})
 
 @signin_required

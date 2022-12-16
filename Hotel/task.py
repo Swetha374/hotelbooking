@@ -4,6 +4,9 @@ from celery import shared_task
 from Hotel.models import *
 from django.conf import settings
 from django.core.mail import EmailMessage
+from datetime import timedelta
+import datetime
+
 
 
 @shared_task(bind=True)
@@ -19,3 +22,17 @@ def test_func(request,id):
     email.send()
 
     return "Done"
+
+@shared_task(bind=True)
+def per_task(id):
+    booking=PerDayBooking.objects.all()
+    for b in booking:
+        if b.date==datetime.date.today():
+            b.status="active"
+            b.save()
+            
+        elif b.date==datetime.date.today()-datetime.timedelta(days=1):
+            b.status="completed"
+            b.save()
+            
+    return "Task completed"
