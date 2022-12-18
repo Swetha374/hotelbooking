@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'Admin',
     'Guest',
     'django_celery_beat',
-    'django_db_logger',
     'guestapi',
     'hotelapi',
     'drf_yasg',
@@ -58,6 +57,16 @@ REST_FRAMEWORK = {
     )
 
 }
+
+# SWAGGER_SETTINGS = {
+#     'SECURITY_DEFINITIONS': {
+#         'api_key': {
+#             'type': 'apiKey',
+#             'in': 'header',
+#             'name': 'Authorization'
+#         }
+#     },
+#}
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {

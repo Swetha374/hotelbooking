@@ -46,9 +46,9 @@ class LoginView(generics.ListCreateAPIView):
             
 
 
-class HotelAddingView(generics.CreateAPIView):
+class HotelAddingListingView(generics.ListCreateAPIView):
     queryset=Hotel.objects.all()
-    serializer_class=HotelAddingSerializer
+    serializer_class=HotelSerializer
     permission_classes=[permissions.IsAuthenticated]
     # permission_classes=(permissions.IsAuthenticated,IsHotelCreateAccess)
 
@@ -63,4 +63,32 @@ class HotelAddingView(generics.CreateAPIView):
                 return Response({'message':'you must register as hotel'},status=status.HTTP_400_BAD_REQUEST)
 
 
-  
+class HotelDetailUpdateView(generics.RetrieveUpdateAPIView):
+    queryset=Hotel.objects.all()
+    serializer_class=HotelSerializer
+    permission_classes=(IsHotelCreateAccess,)
+    lookup_field="id"
+
+class HotelDeleteView(generics.RetrieveDestroyAPIView):
+    queryset=Hotel.objects.all()
+    serializer_class=HotelSerializer
+    permission_classes=(IsHotelCreateAccess,)
+    lookup_field="id"
+
+class RoomAddListView(generics.ListCreateAPIView):
+    queryset=Room.objects.all()
+    serializer_class=RoomSerializer
+    permission_classes=(IsHotelCreateAccess,)
+    lookup_url_kwarg="id"
+    
+
+    def create(self,request,*args,**kwargs):
+        print(self.kwargs.get(self.lookup_url_kwarg))
+        serializer=self.serializer_class(data=request.data,context={'request':request,'hotel_id':self.kwargs.get(self.lookup_url_kwarg)})
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+        return Response(data=serializer.data,status=status.HTTP_201_CREATED)
+    
+    def get_queryset(self,**kwargs):
+        return Room.objects.filter(hotel__owner_name=self.request.user,hotel__id=self.kwargs.get(self.lookup_url_kwarg))

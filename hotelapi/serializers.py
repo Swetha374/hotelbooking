@@ -32,10 +32,11 @@ class LoginSerializer(serializers.Serializer):
   password = forms.CharField(widget=forms.PasswordInput(attrs={"class": "form-control"}))       
 
 
-class HotelAddingSerializer(serializers.ModelSerializer):
+class HotelSerializer(serializers.ModelSerializer):
     class Meta:
         model=Hotel
-        fields=["hotel_name",
+        fields=["id",
+                "hotel_name",
                 "image",
                 "address",
                 "location",
@@ -49,9 +50,18 @@ class HotelAddingSerializer(serializers.ModelSerializer):
     #         user=self.context['request'].user
     #         hotel=Hotel.objects.create(**validated_data,owner_name=user)
     #         print(hotel)
-    #         return hotel
+    #         return hotel     
         
+class RoomSerializer(serializers.ModelSerializer):
+  class Meta:
+    model=Room
+    # fields="__all__"
+    exclude = ("hotel",)
 
-       
-        
-        
+
+  def create(self, validated_data):
+            user=self.context['request'].user 
+            hotel_id=self.context['hotel_id']
+            room=Room.objects.create(**validated_data,hotel_id=hotel_id)
+            return room  
+            
